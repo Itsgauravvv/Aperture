@@ -1,3 +1,10 @@
+import { runDomAudit } from "./auditor/auditor";
+import {
+  blendColors,
+  getContrastRatio,
+  getRelativeLuminance,
+  parseColor,
+} from "./auditor/contrast";
 import { VisionEngine } from "./filters/vision";
 import { LensHUD } from "./hud/hud";
 import { DyslexiaMode } from "./modes/dyslexia";
@@ -13,6 +20,13 @@ import {
 } from "./types";
 
 export * from "./types";
+export {
+  parseColor,
+  blendColors,
+  getRelativeLuminance,
+  getContrastRatio,
+  runDomAudit,
+};
 export const VERSION = "0.1.0";
 
 class LensController {
@@ -67,13 +81,11 @@ class LensController {
 
     this.state.activeSimulation = simulation;
 
-    // 1. Stop any previously active special modes
     this.dyslexia.stop();
     this.motor.stop();
     this.keyboardPath.stop();
     this.vision.clear();
 
-    // 2. Activate the newly selected simulation engine
     if (simulation === "dyslexia") {
       this.dyslexia.start();
     } else if (simulation === "tremor") {
@@ -114,17 +126,11 @@ class LensController {
     });
   }
 
-  public audit(): AuditReport {
-    const report: AuditReport = {
-      score: 100,
-      timestamp: Date.now(),
-      totalChecked:
-        typeof document !== "undefined"
-          ? document.querySelectorAll("*").length
-          : 0,
-      issues: [],
-    };
-
+  /**
+   * Scans the live DOM (or a scoped container) for WCAG issues and returns a score out of 100.
+   */
+  public audit(root: Document | HTMLElement = document): AuditReport {
+    const report = runDomAudit(root);
     this.state.lastAudit = report;
     this.hud?.update(this.state);
     this.emit("lens:audit", report);
