@@ -1,4 +1,8 @@
+import { VisionEngine } from "./filters/vision";
 import { LensHUD } from "./hud/hud";
+import { DyslexiaMode } from "./modes/dyslexia";
+import { KeyboardPathMode } from "./modes/keyboard";
+import { MotorMode } from "./modes/motor";
 import {
   AuditReport,
   LensMountOptions,
@@ -21,10 +25,11 @@ class LensController {
   };
 
   private hud: LensHUD | null = null;
+  private vision = new VisionEngine();
+  private dyslexia = new DyslexiaMode();
+  private motor = new MotorMode();
+  private keyboardPath = new KeyboardPathMode();
 
-  /**
-   * Mounts the floating optical HUD onto the current page.
-   */
   public mount(options: LensMountOptions = {}): void {
     if (typeof window === "undefined") return;
 
@@ -50,9 +55,6 @@ class LensController {
     }
   }
 
-  /**
-   * Activates a visual, cognitive, motor, or keyboard simulation mode.
-   */
   public simulate(
     simulation: SimulationType,
     intensity?: number
@@ -65,16 +67,28 @@ class LensController {
 
     this.state.activeSimulation = simulation;
 
-    // Set data attribute on <html> so Stage 3 SVG/CSS filters and modes react immediately
+    // 1. Stop any previously active special modes
+    this.dyslexia.stop();
+    this.motor.stop();
+    this.keyboardPath.stop();
+    this.vision.clear();
+
+    // 2. Activate the newly selected simulation engine
+    if (simulation === "dyslexia") {
+      this.dyslexia.start();
+    } else if (simulation === "tremor") {
+      this.motor.start();
+    } else if (simulation === "keyboard-path") {
+      this.keyboardPath.start();
+    } else if (simulation !== "none") {
+      this.vision.apply(simulation, this.state.intensity);
+    }
+
     if (simulation === "none") {
       document.documentElement.removeAttribute("data-lens-sim");
     } else {
       document.documentElement.setAttribute("data-lens-sim", simulation);
     }
-    document.documentElement.style.setProperty(
-      "--lens-intensity",
-      String(this.state.intensity / 100)
-    );
 
     this.hud?.update(this.state);
     this.emit("lens:change", {
@@ -85,16 +99,13 @@ class LensController {
     return this.state.activeSimulation;
   }
 
-  /**
-   * Updates intensity for adjustable filters (low-vision, cataracts).
-   */
   public setIntensity(intensity: number): void {
     this.state.intensity = Math.max(0, Math.min(100, intensity));
-    if (typeof document !== "undefined") {
-      document.documentElement.style.setProperty(
-        "--lens-intensity",
-        String(this.state.intensity / 100)
-      );
+    if (
+      this.state.activeSimulation === "low-vision" ||
+      this.state.activeSimulation === "cataracts"
+    ) {
+      this.vision.apply(this.state.activeSimulation, this.state.intensity);
     }
     this.hud?.update(this.state);
     this.emit("lens:change", {
@@ -103,10 +114,6 @@ class LensController {
     });
   }
 
-  /**
-   * Scans the live DOM and returns an accessibility score out of 100.
-   * (Full WCAG contrast + 8-rule scanner engine is expanded in Stage 4).
-   */
   public audit(): AuditReport {
     const report: AuditReport = {
       score: 100,
@@ -124,39 +131,34 @@ class LensController {
     return report;
   }
 
-  /**
-   * Turns off all active simulations and unmounts the floating HUD.
-   */
   public off(): void {
+    this.dyslexia.stop();
+    this.motor.stop();
+    this.keyboardPath.stop();
+    this.vision.clear();
+
     if (typeof document !== "undefined") {
       document.documentElement.removeAttribute("data-lens-sim");
-      document.documentElement.style.removeProperty("--lens-intensity");
     }
     this.state.activeSimulation = "none";
     this.state.lastAudit = null;
     this.state.mounted = false;
     this.hud?.unmount();
     this.hud = null;
-    this.emit("lens:change", { simulation: "none", intensity: this.state.intensity });
+    this.emit("lens:change", {
+      simulation: "none",
+      intensity: this.state.intensity,
+    });
   }
 
-  /**
-   * Returns current Lens state.
-   */
   public getState(): Readonly<LensState> {
     return { ...this.state };
   }
 
-  /**
-   * Returns metadata for all supported simulations.
-   */
   public getCatalog(): SimulationMeta[] {
     return SIMULATION_CATALOG;
   }
 
-  /**
-   * Generates a one-line javascript: bookmarklet URL so users can run Lens on any site.
-   */
   public createBookmarklet(
     cdnUrl = "https://cdn.jsdelivr.net/npm/lens-a11y@0.1/dist/lens.min.js"
   ): string {
@@ -183,23 +185,3 @@ class LensController {
 }
 
 export const Lens = new LensController();
-
-// Auto-boot declarative mode: <script src="..." data-lens="protanopia"></script>
-if (typeof window !== "undefined" && typeof document !== "undefined") {
-  const bootDeclarative = () => {
-    const scriptEl = document.querySelector(
-      "script[data-lens]"
-    ) as HTMLScriptElement | null;
-    if (!scriptEl) return;
-    const attr = (scriptEl.getAttribute("data-lens") || "none") as SimulationType;
-    Lens.mount({
-      initialSimulation: attr === ("auto" as unknown) ? "none" : attr,
-    });
-  };
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", bootDeclarative, { once: true });
-  } else {
-    bootDeclarative();
-  }
-}
