@@ -1,4 +1,5 @@
 import React from "react";
+import { LaunchHudButton } from "@/components/ui/LaunchHudButton";
 
 export default function HomePage() {
   return (
@@ -8,7 +9,6 @@ export default function HomePage() {
         aria-labelledby="hero-heading"
         className="relative border-x border-b py-16 sm:py-24 px-6 sm:px-12"
       >
-        {/* Decorative Crosshair Marks (+) at Grid Intersections */}
         <span
           aria-hidden="true"
           className="pointer-events-none absolute -bottom-2.5 -left-2 text-sm text-[var(--muted)] select-none"
@@ -22,7 +22,6 @@ export default function HomePage() {
           +
         </span>
 
-        {/* Section Index & Optical Readout */}
         <div
           style={{ fontFamily: "var(--font-mono)" }}
           className="mb-6 flex flex-wrap items-center justify-between gap-4 text-xs uppercase tracking-[0.14em] text-[var(--muted)]"
@@ -31,7 +30,6 @@ export default function HomePage() {
           <span>LENS-A11Y // ZERO-DEPENDENCY // &lt;15KB GZIP</span>
         </div>
 
-        {/* Hero Headline: Inter Tight (-0.04em tracking) + ONE word in Instrument Serif Italic */}
         <h1
           id="hero-heading"
           className="max-w-4xl text-4xl font-bold tracking-[-0.04em] sm:text-6xl lg:text-7xl leading-[1.04]"
@@ -55,18 +53,8 @@ export default function HomePage() {
           an instant WCAG accessibility audit.
         </p>
 
-        {/* Primary & Secondary Buttons (44px+ minimum target size) */}
         <div className="mt-8 flex flex-wrap items-center gap-4">
-          <a
-            href="#simulations"
-            style={{
-              backgroundColor: "var(--accent)",
-              color: "var(--accent-ink)",
-            }}
-            className="inline-flex min-h-[44px] items-center justify-center rounded-[10px] px-5 py-2.5 text-sm font-medium shadow-[inset_0_1px_0_rgba(255,255,255,0.25)] transition-opacity hover:opacity-90"
-          >
-            Launch Interactive Lens
-          </a>
+          <LaunchHudButton />
           <a
             href="/docs"
             className="inline-flex min-h-[44px] items-center justify-center rounded-[10px] border px-5 py-2.5 text-sm font-medium transition-colors hover:border-[var(--accent)]"

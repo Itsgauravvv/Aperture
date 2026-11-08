@@ -5,9 +5,27 @@
   "license": "MIT",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
+  "unpkg": "./dist/lens.min.js",
+  "jsdelivr": "./dist/lens.min.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./lens.min.js": "./dist/lens.min.js"
+  },
   "scripts": {
-    "dev": "echo 'lens-a11y ready for Stage 2'",
-    "build": "echo 'lens-a11y build placeholder'"
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "lint": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
   }
 }
