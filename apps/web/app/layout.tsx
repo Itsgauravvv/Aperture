@@ -11,6 +11,7 @@ import {
 } from "@/components/layout/ThemeProvider";
 import { Navbar } from "@/components/layout/Navbar";
 import { ScrollRuler } from "@/components/layout/ScrollRuler";
+import { OpticalDefs } from "@/components/ui/OpticalDefs";
 
 const interTight = Inter_Tight({
   subsets: ["latin"],
@@ -53,7 +54,7 @@ export default function RootLayout({
         <ThemeInitScript />
       </head>
       <body className="min-h-screen flex flex-col">
-        {/* Skip to Main Content Link for Keyboard Users */}
+        <OpticalDefs />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-[var(--accent)] focus:px-4 focus:py-2.5 focus:text-sm focus:font-medium focus:text-[var(--accent-ink)]"
