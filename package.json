@@ -1,0 +1,16 @@
+{
+  "name": "aperture-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "dev": "pnpm --parallel -r dev",
+    "build": "pnpm --filter lens-a11y build && pnpm --filter web build",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2"
+  }
+}

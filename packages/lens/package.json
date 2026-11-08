@@ -1,0 +1,13 @@
+{
+  "name": "lens-a11y",
+  "version": "0.1.0",
+  "description": "Zero-dependency visual & motor impairment simulator and accessibility auditor.",
+  "license": "MIT",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "dev": "echo 'lens-a11y ready for Stage 2'",
+    "build": "echo 'lens-a11y build placeholder'"
+  }
+}

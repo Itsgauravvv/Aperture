@@ -1,0 +1,147 @@
+@import "tailwindcss";
+
+/* 1. OPTICAL / SWISS-TECHNICAL THEME TOKENS */
+:root,
+[data-theme="light"] {
+  --bg: #f5f5f2;
+  --surface: #ffffff;
+  --ink: #0e0e10;
+  --muted: #5b5b66; /* 6.3:1 contrast against --bg, 7.0:1 against --surface (Passes WCAG AA) */
+  --line: rgba(14, 14, 16, 0.14);
+  --accent: #2f3cff;
+  --accent-ink: #ffffff;
+  --border-width: 1px;
+}
+
+[data-theme="dark"] {
+  --bg: #0b0b0e;
+  --surface: #121217;
+  --ink: #f2f2f5;
+  --muted: #a0a0ad; /* 7.4:1 contrast against --bg (Passes WCAG AAA) */
+  --line: rgba(255, 255, 255, 0.14);
+  --accent: #9aa5ff;
+  --accent-ink: #0b0b0e;
+  --border-width: 1px;
+}
+
+[data-theme="contrast"] {
+  --bg: #000000;
+  --surface: #000000;
+  --ink: #ffffff;
+  --muted: #ffffff;
+  --line: #ffffff;
+  --accent: #ffd400; /* 14.5:1 contrast on black */
+  --accent-ink: #000000;
+  --border-width: 2px;
+}
+
+/* 2. BASE DOCUMENT & ACCESSIBLE FOCUS RINGS */
+* {
+  border-color: var(--line);
+}
+
+html {
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Every interactive element gets a clear 2px accent ring with 2px offset */
+:focus-visible {
+  outline: 2px solid var(--accent) !important;
+  outline-offset: 2px !important;
+}
+
+/* 3. REDUCED MOTION OVERRIDES (System + Manual Navbar Toggle) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html[data-reduce-motion="true"] *,
+html[data-reduce-motion="true"] ::before,
+html[data-reduce-motion="true"] ::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* 4. CAMERA VIEWFINDER CARD & CORNER BRACKETS */
+.optical-card {
+  position: relative;
+  background-color: var(--surface);
+  border: var(--border-width) solid var(--line);
+  border-radius: 12px;
+  transition: border-color 180ms ease;
+}
+
+.optical-card:hover,
+.optical-card:focus-within {
+  border-color: var(--accent);
+}
+
+/* Corner brackets [ ] that frame cards on hover/focus */
+.optical-card::before,
+.optical-card::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.97);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.optical-card::before {
+  border-top: 1.5px solid var(--accent);
+  border-bottom: 1.5px solid var(--accent);
+  mask-image: linear-gradient(
+    to right,
+    #000 10px,
+    transparent 10px,
+    transparent calc(100% - 10px),
+    #000 calc(100% - 10px)
+  );
+}
+
+.optical-card::after {
+  border-left: 1.5px solid var(--accent);
+  border-right: 1.5px solid var(--accent);
+  mask-image: linear-gradient(
+    to bottom,
+    #000 10px,
+    transparent 10px,
+    transparent calc(100% - 10px),
+    #000 calc(100% - 10px)
+  );
+}
+
+[data-theme="contrast"] .optical-card::before,
+[data-theme="contrast"] .optical-card::after {
+  display: none; /* No decorative effects in High Contrast mode */
+}
+
+.optical-card:hover::before,
+.optical-card:hover::after,
+.optical-card:focus-within::before,
+.optical-card:focus-within::after {
+  opacity: 1;
+  transform: scale(1);
+}
