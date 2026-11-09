@@ -3,11 +3,15 @@ import { LaunchHudButton } from "@/components/ui/LaunchHudButton";
 import { FocusPull } from "@/components/ui/FocusPull";
 import { HeroLens } from "@/components/sections/HeroLens";
 import { SimulationGrid } from "@/components/sections/SimulationGrid";
+import { SplitPlayground } from "@/components/sections/SplitPlayground";
+import { AuditDemo } from "@/components/sections/AuditDemo";
+import { KeyboardPathDemo } from "@/components/sections/KeyboardPathDemo";
+import { InstallAndFaq } from "@/components/sections/InstallAndFaq";
 
 export default function HomePage() {
   return (
     <div className="mx-auto max-w-[1280px] px-4 sm:px-8">
-      {/* 00 / HERO SECTION WITH INTERACTIVE OPTICAL LENS */}
+      {/* 00 / HERO SECTION */}
       <section
         aria-labelledby="hero-heading"
         className="relative border-x border-b py-14 sm:py-20 px-6 sm:px-12"
@@ -61,14 +65,19 @@ export default function HomePage() {
         <div className="mt-8 flex flex-wrap items-center gap-4">
           <LaunchHudButton />
           <a
+            href="/playground"
+            className="inline-flex min-h-[44px] items-center justify-center rounded-[10px] border px-5 py-2.5 text-sm font-medium transition-colors hover:border-[var(--accent)]"
+          >
+            Open Full-Screen Sandbox
+          </a>
+          <a
             href="/docs"
             className="inline-flex min-h-[44px] items-center justify-center rounded-[10px] border px-5 py-2.5 text-sm font-medium transition-colors hover:border-[var(--accent)]"
           >
-            Read API Documentation
+            Read API Docs
           </a>
         </div>
 
-        {/* Interactive Hero Viewfinder Lens */}
         <HeroLens />
       </section>
 
@@ -83,29 +92,66 @@ export default function HomePage() {
         PHOTOPHOBIA &bull; DYSLEXIA &bull; MOTOR TREMOR &bull; TAB TOPOLOGY
       </div>
 
-      {/* 01 / 8-CARD LIVE SIMULATION GRID */}
+      {/* 01 / SIMULATIONS GRID */}
       <section
         id="simulations"
         aria-labelledby="sim-heading"
         className="relative border-x border-b py-16 px-6 sm:px-12"
       >
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute -bottom-2.5 -left-2 text-sm text-[var(--muted)] select-none"
-        >
-          +
-        </span>
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute -bottom-2.5 -right-2 text-sm text-[var(--muted)] select-none"
-        >
-          +
-        </span>
-
         <FocusPull>
           <SimulationGrid />
         </FocusPull>
       </section>
+
+      {/* 02 / SPLIT BEFORE-AFTER PLAYGROUND */}
+      <section
+        aria-labelledby="playground-heading"
+        className="relative border-x border-b py-16 px-6 sm:px-12"
+      >
+        <FocusPull>
+          <SplitPlayground />
+        </FocusPull>
+      </section>
+
+      {/* 03 / AUTOMATED AUDITOR DEMO */}
+      <section
+        aria-labelledby="audit-demo-heading"
+        className="relative border-x border-b py-16 px-6 sm:px-12"
+      >
+        <FocusPull>
+          <AuditDemo />
+        </FocusPull>
+      </section>
+
+      {/* 04 / KEYBOARD TAB-PATH DEMO */}
+      <section
+        aria-labelledby="keyboard-demo-heading"
+        className="relative border-x border-b py-16 px-6 sm:px-12"
+      >
+        <FocusPull>
+          <KeyboardPathDemo />
+        </FocusPull>
+      </section>
+
+      {/* 05 & 06 / INSTALL TABS + FAQ */}
+      <section
+        aria-labelledby="install-heading"
+        className="relative border-x border-b py-16 px-6 sm:px-12"
+      >
+        <FocusPull>
+          <InstallAndFaq />
+        </FocusPull>
+      </section>
+
+      {/* FOOTER */}
+      <footer
+        role="contentinfo"
+        style={{ fontFamily: "var(--font-mono)" }}
+        className="border-x py-10 px-6 sm:px-12 text-xs text-[var(--muted)] flex flex-wrap items-center justify-between gap-4"
+      >
+        <div>APERTURE (LENS-A11Y) // MIT LICENSE // OPEN-SOURCE</div>
+        <div>WCAG 2.1 AA/AAA VERIFIED // ZERO-DEPENDENCY</div>
+      </footer>
     </div>
   );
 }
