@@ -39,7 +39,7 @@ aperture/
 │   └── extension/         # Manifest V3 Chrome/Brave Extension for CSP-restricted websites
 └── .github/workflows/     # Automated CI for Vitest WCAG checks & monorepo builds
 
-
+```
 ## 📦 Quick Usage
 
 ### 1. One-Line CDN Script Tag
