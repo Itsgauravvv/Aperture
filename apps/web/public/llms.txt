@@ -1,0 +1,23 @@
+# Aperture (`lens-a11y`)
+
+> See your website the way everyone else does. Free, open-source, zero-dependency TypeScript library (<15 KB gzip) that simulates visual, cognitive, and motor impairments and runs live WCAG 2.1 DOM accessibility audits.
+
+## Quick Install
+
+- CDN Script Tag: `<script src="https://cdn.jsdelivr.net/npm/lens-a11y@0.1/dist/lens.min.js" data-lens="auto"></script>`
+- Package Manager: `pnpm add lens-a11y` or `npm install lens-a11y`
+
+## Core API (`lens-a11y`)
+
+- `Lens.mount(options)`: Mounts the isolated Shadow-DOM floating HUD (`position`, `theme`, `initialSimulation`, `initialIntensity`).
+- `Lens.simulate(mode, intensity?)`: Activates `"protanopia"`, `"deuteranopia"`, `"tritanopia"`, `"achromatopsia"`, `"low-vision"`, `"cataracts"`, `"glaucoma"`, `"macular"`, `"glare"`, `"low-contrast"`, `"dyslexia"`, `"tremor"`, or `"keyboard-path"`.
+- `Lens.audit(root?)`: Runs the 8-rule WCAG 2.1 scanner (`html-lang`, `landmarks`, `img-alt`, `button-name`, `input-label`, `heading-order`, `color-contrast`, `target-size`) and returns `{ score, totalChecked, issues }`.
+- `Lens.off()`: Restores the original DOM and unmounts the HUD.
+- Events: `window.addEventListener("lens:change", ...)` and `window.addEventListener("lens:audit", ...)`.
+
+## Routes
+
+- `/`: Interactive Hero Lens viewfinder, 8-card live Simulation Grid, Before/After Split Playground, Animated Audit Demo, Keyboard Tab-Order Topology Demo.
+- `/docs`: Full TypeScript API reference, configuration table, and event listeners.
+- `/playground`: Live HTML testbench with Fintech, E-Commerce, and Healthcare templates, real-time DOM auto-remediation, and JSON report export.
+- `/install`: Manifest V3 CSP-bypassing browser extension guide, CDN snippets, and CI/CD Vitest quality gates.
