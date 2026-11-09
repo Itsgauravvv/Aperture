@@ -6,6 +6,29 @@ import {
   SimulationType,
 } from "../types";
 
+function setSafeHtml(el: Element | ShadowRoot, html: string): void {
+  const win = window as unknown as {
+    trustedTypes?: {
+      createPolicy: (
+        name: string,
+        rules: { createHTML: (s: string) => string }
+      ) => { createHTML: (s: string) => string };
+    };
+  };
+  if (win.trustedTypes?.createPolicy) {
+    try {
+      const policy = win.trustedTypes.createPolicy("aperture-lens-policy", {
+        createHTML: (s) => s,
+      });
+      el.innerHTML = policy.createHTML(html) as unknown as string;
+      return;
+    } catch {
+      // Fallback if policy already exists or is restricted
+    }
+  }
+  el.innerHTML = html;
+}
+
 export interface HudCallbacks {
   onSelectSimulation: (sim: SimulationType) => void;
   onIntensityChange: (intensity: number) => void;
@@ -97,7 +120,7 @@ export class LensHUD {
       SIMULATION_CATALOG[0]!;
     const theme = this.resolveTheme();
 
-    this.shadow.innerHTML = `
+    setSafeHtml(this.shadow, `
       <style>
         :host {
           all: initial;
@@ -396,7 +419,7 @@ export class LensHUD {
           }
         </div>
       </section>
-    `;
+    `);
 
     this.bindEvents();
   }

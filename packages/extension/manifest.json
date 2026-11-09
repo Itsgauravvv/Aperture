@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Aperture (lens-a11y) — Optical Accessibility Instrument",
+  "version": "0.1.0",
+  "description": "Simulate visual/motor impairments and run live WCAG 2.1 DOM audits on any website, bypassing page CSP restrictions.",
+  "permissions": ["activeTab", "scripting"],
+  "action": {
+    "default_title": "Toggle Aperture Lens HUD"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}
