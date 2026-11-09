@@ -40,20 +40,23 @@ export default function OpenGraphImage() {
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           <div
             style={{
-              fontSize: "76px",
+              display: "flex",
+              flexWrap: "wrap",
+              fontSize: "72px",
               fontWeight: 800,
-              lineHeight: 1.05,
+              lineHeight: 1.08,
               letterSpacing: "-0.04em",
             }}
           >
-            See your website the way{" "}
+            <span>See your website the way&nbsp;</span>
             <span style={{ color: "#9aa5ff", fontStyle: "italic" }}>
               everyone
-            </span>{" "}
-            else does.
+            </span>
+            <span>&nbsp;else does.</span>
           </div>
           <div
             style={{
+              display: "flex",
               fontSize: "28px",
               color: "#a0a0ad",
               maxWidth: "900px",

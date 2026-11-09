@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [main, master]
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   verify-and-build:
     name: Lint, Vitest WCAG Audit & Monorepo Build
@@ -24,16 +27,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: "pnpm"
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile=false
-
-      - name: Run Vitest WCAG Contrast & Auditor Suite
-        run: pnpm --filter lens-a11y test
+        run: pnpm install --no-frozen-lockfile
 
       - name: Build lens-a11y Library (ESM + CJS + IIFE + Extension)
         run: pnpm --filter lens-a11y build
+
+      - name: Run Vitest WCAG Contrast & Auditor Suite
+        run: pnpm --filter lens-a11y test
 
       - name: Build Next.js 15 Showcase Website
         run: pnpm --filter web build
