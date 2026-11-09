@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { FloatingOptics } from "@/components/ui/FloatingOptics";
 import { KonamiEasterEgg } from "@/components/ui/KonamiEasterEgg";
 import {
   Inter_Tight,
@@ -65,6 +66,7 @@ export default function RootLayout({
         <ThemeProvider>
           <Navbar />
           <ScrollRuler />
+          <FloatingOptics />
           <KonamiEasterEgg />
           <main id="main-content" className="flex-1 xl:pl-10">
             {children}

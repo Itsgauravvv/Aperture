@@ -119,7 +119,7 @@ class LensController {
     ) {
       this.vision.apply(this.state.activeSimulation, this.state.intensity);
     }
-    this.hud?.update(this.state);
+    this.hud?.updateIntensityOnly(this.state.intensity);
     this.emit("lens:change", {
       simulation: this.state.activeSimulation,
       intensity: this.state.intensity,
