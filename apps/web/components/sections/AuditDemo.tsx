@@ -271,7 +271,7 @@ export function AuditDemo() {
                 style={{ fontFamily: "var(--font-mono)" }}
                 className="mt-6 min-h-[44px] cursor-pointer rounded-lg border px-4 text-xs font-bold uppercase tracking-wider hover:border-[var(--accent)]"
               >
-                ⚡ Start Sample Scan
+                Start Sample Scan
               </button>
             </div>
           ) : (

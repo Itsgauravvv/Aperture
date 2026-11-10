@@ -345,7 +345,7 @@ export default function PlaygroundPage() {
               style={{ fontFamily: "var(--font-mono)" }}
               className="min-h-[44px] cursor-pointer rounded-lg border bg-[var(--surface)] px-4 text-xs font-bold uppercase tracking-wider transition-colors hover:border-[var(--accent)]"
             >
-              {isScanning ? "Scanning DOM..." : "🔍 Scan Specimen"}
+              {isScanning ? "Scanning DOM..." : "Scan Specimen"}
             </button>
 
             <button
@@ -360,7 +360,7 @@ export default function PlaygroundPage() {
             >
               {isRemediated
                 ? "✓ Remediated (100/100)"
-                : "✨ Auto-Remediate & Scan"}
+                : "Auto-Remediate & Scan"}
             </button>
 
             <button
@@ -586,9 +586,9 @@ export default function PlaygroundPage() {
                     DIAGNOSTIC STANDBY
                   </div>
                   <p className="mt-2 max-w-md text-xs text-[var(--muted)]">
-                    Click <strong>&quot;🔍 Scan Specimen&quot;</strong> to run
+                    Click <strong>&quot;Scan Specimen&quot;</strong> to run
                     the 8-rule WCAG 2.1 DOM auditor on the flawed UI, or click{" "}
-                    <strong>&quot;✨ Auto-Remediate &amp; Scan&quot;</strong> to
+                    <strong>&quot;Auto-Remediate &amp; Scan&quot;</strong> to
                     patch all defects and verify a 100/100 score.
                   </p>
                 </div>
