@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   AuditReport,
   runDomAudit,
   SIMULATION_CATALOG,
   SimulationType,
 } from "lens-a11y";
+import { usePreferences } from "@/components/layout/ThemeProvider";
 
 interface SandboxPreset {
   id: string;
@@ -19,29 +20,81 @@ interface SandboxPreset {
 const SANDBOX_PRESETS: SandboxPreset[] = [
   {
     id: "fintech",
-    name: "Fintech Portfolio",
+    name: "Fintech Terminal",
     tag: "CONTRAST & TARGETS",
-    flawedHtml: `<div style="padding: 20px; font-family: system-ui, sans-serif; background: #ffffff; color: #0e0e10;">
-  <h1 style="font-size: 20px; font-weight: 700; margin: 0;">Portfolio Balance: $42,850.00</h1>
-  <h4 style="font-size: 14px; margin-top: 8px; color: #e11d48;">▼ -4.2% Today (Skipped h2/h3!)</h4>
-  <p style="color: #b8b8c2; background: #ffffff; font-size: 13px; margin-top: 8px;">
-    Settlement fee of 0.15% applies to instant wire transfers. (Low 1.9:1 contrast!)
+    flawedHtml: `<div style="padding: 24px; font-family: system-ui, -apple-system, sans-serif; background: #0d0e12; color: #f2f2f5; border-radius: 12px; border: 1px solid #232530;">
+  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e2029; padding-bottom: 14px;">
+    <div>
+      <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #52525e;">LIQUIDITY POOL // USD-USDC</span>
+      <h1 style="font-size: 24px; font-weight: 800; margin: 4px 0 0 0; letter-spacing: -0.03em;">$142,850.40</h1>
+    </div>
+    <span style="background: rgba(225, 29, 72, 0.15); color: #f43f5e; padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 700;">
+      ▼ -4.28% (24H)
+    </span>
+  </div>
+
+  <!-- BUG 1: Skipped heading level h1 -> h4 -->
+  <h4 style="font-size: 13px; font-weight: 700; margin: 16px 0 6px 0; color: #e2e2e8;">
+    Instant Wire Execution (Skipped h2/h3!)
+  </h4>
+
+  <!-- BUG 2: Low contrast text (#474854 on #0d0e12 = 2.1:1 ratio) -->
+  <p style="color: #474854; background: #0d0e12; font-size: 12.5px; line-height: 1.5; margin: 0;">
+     Institutional settlement fee of 0.15% applies to cross-border SWIFT routing. (Fails WCAG 4.5:1)
   </p>
-  <div style="margin-top: 14px; display: flex; gap: 8px; align-items: center;">
-    <input type="number" placeholder="Transfer amount USD (Missing label!)" style="padding: 8px; border: 1px solid #ccc; border-radius: 6px;" />
-    <button type="button" style="width: 26px; height: 26px; background: #2f3cff; color: #fff; border: none; border-radius: 4px;"></button>
+
+  <div style="margin-top: 16px; display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; background: #14161d; padding: 12px; border-radius: 10px; border: 1px solid #232530;">
+    <!-- BUG 3: Input missing associated <label> or aria-label -->
+    <input
+      type="number"
+      placeholder="Enter wire amount in USD..."
+      style="width: 100%; padding: 8px 12px; background: #0d0e12; color: #ffffff; border: 1px solid #2e303e; border-radius: 6px; font-size: 13px;"
+    />
+    <!-- BUG 4: 26x26px undersized icon button with no accessible name -->
+    <button
+      type="button"
+      style="width: 26px; height: 26px; background: #2f3cff; color: #ffffff; border: none; border-radius: 6px; cursor: pointer;"
+    ></button>
   </div>
 </div>`,
-    fixedHtml: `<div style="padding: 20px; font-family: system-ui, sans-serif; background: #ffffff; color: #0e0e10;">
-  <h1 style="font-size: 20px; font-weight: 700; margin: 0;">Portfolio Balance: $42,850.00</h1>
-  <h2 style="font-size: 14px; margin-top: 8px; color: #be123c;">▼ Down 4.2% Today (Sequential h2 + icon text)</h2>
-  <p style="color: #4b4b57; background: #ffffff; font-size: 13px; margin-top: 8px;">
-    Settlement fee of 0.15% applies to instant wire transfers. (7.8:1 WCAG AAA contrast)
+    fixedHtml: `<div style="padding: 24px; font-family: system-ui, -apple-system, sans-serif; background: #0d0e12; color: #f2f2f5; border-radius: 12px; border: 1px solid #2e3244;">
+  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #232634; padding-bottom: 14px;">
+    <div>
+      <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #a0a3b1;">LIQUIDITY POOL // USD-USDC</span>
+      <h1 style="font-size: 24px; font-weight: 800; margin: 4px 0 0 0; letter-spacing: -0.03em;">$142,850.40</h1>
+    </div>
+    <span style="background: rgba(244, 63, 94, 0.2); color: #fda4af; border: 1px solid rgba(244, 63, 94, 0.4); padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 700;">
+      ▼ Down 4.28% (24H)
+    </span>
+  </div>
+
+  <!-- FIXED 1: Sequential h2 heading -->
+  <h2 style="font-size: 14px; font-weight: 700; margin: 16px 0 6px 0; color: #f2f2f5;">
+    Instant Wire Execution (Sequential &lt;h2&gt;)
+  </h2>
+
+  <!-- FIXED 2: High contrast #b4b7c5 on #0d0e12 (8.4:1 AAA ratio) -->
+  <p style="color: #b4b7c5; background: #0d0e12; font-size: 13px; line-height: 1.5; margin: 0;">
+    Institutional settlement fee of 0.15% applies to cross-border SWIFT routing. (Verified 8.4:1 AAA Contrast)
   </p>
-  <div style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
-    <label for="transfer-usd" style="font-size: 13px; font-weight: 600; color: #0e0e10;">Amount (USD)</label>
-    <input id="transfer-usd" type="number" style="min-height: 44px; padding: 0 12px; border: 1px solid #555; border-radius: 6px;" />
-    <button type="button" aria-label="Execute Wire Transfer" style="min-width: 120px; min-height: 44px; padding: 0 14px; background: #2f3cff; color: #ffffff; font-weight: 600; border: none; border-radius: 6px;">
+
+  <div style="margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; background: #14161d; padding: 14px; border-radius: 10px; border: 1px solid #2e3244;">
+    <!-- FIXED 3: Explicit programmatic <label> -->
+    <label for="wire-usd-input" style="font-size: 12px; font-weight: 700; color: #f2f2f5;">
+      Wire Amount (USD)
+    </label>
+    <input
+      id="wire-usd-input"
+      type="number"
+      defaultValue="2500"
+      style="flex: 1; min-height: 44px; padding: 0 12px; background: #0d0e12; color: #ffffff; border: 1px solid #4a4e69; border-radius: 8px; font-size: 13px;"
+    />
+    <!-- FIXED 4: 44px minimum target size + descriptive label -->
+    <button
+      type="button"
+      aria-label="Execute Instant Wire Transfer"
+      style="min-width: 136px; min-height: 44px; padding: 0 16px; background: #2f3cff; color: #ffffff; font-weight: 700; font-size: 12px; border: none; border-radius: 8px; cursor: pointer;"
+    >
       Send Wire →
     </button>
   </div>
@@ -49,66 +102,104 @@ const SANDBOX_PRESETS: SandboxPreset[] = [
   },
   {
     id: "ecommerce",
-    name: "E-Commerce Checkout",
+    name: "Luxury Checkout",
     tag: "ALT TEXT & LABELS",
-    flawedHtml: `<div style="padding: 20px; font-family: system-ui, sans-serif; background: #ffffff; color: #0e0e10;">
-  <h1 style="font-size: 20px; font-weight: 700; margin: 0;">Express Checkout</h1>
-  <h3 style="font-size: 15px; margin-top: 10px;">Order Item (Skipped h2!)</h3>
-  <img src="https://placehold.co/100x48/2f3cff/ffffff?text=LENS+PRO" style="margin-top: 8px; border-radius: 6px;" />
-  <p style="color: #c0c0c8; background: #ffffff; font-size: 13px; margin-top: 8px;">
-    Non-refundable digital license key.
-  </p>
-  <div style="margin-top: 12px; display: flex; gap: 8px;">
-    <input type="text" placeholder="Discount code" style="padding: 6px; border: 1px solid #ccc; border-radius: 4px;" />
-    <button type="button" style="width: 28px; height: 28px; border: 1px solid #ccc; border-radius: 4px;"></button>
+    flawedHtml: `<div style="padding: 24px; font-family: system-ui, sans-serif; background: #ffffff; color: #0e0e10; border-radius: 12px; border: 1px solid #e4e4e7;">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <h1 style="font-size: 20px; font-weight: 800; margin: 0;">Express Bag (1 Item)</h1>
+    <span style="font-size: 12px; color: #ef4444; font-weight: 600;">● Low Stock</span>
+  </div>
+
+  <!-- BUG 1: Skipped heading h1 -> h4 -->
+  <h4 style="font-size: 14px; margin: 14px 0 8px 0; color: #27272a;">
+    Optical Calibration Kit Pro
+  </h4>
+
+  <div style="display: flex; gap: 14px; align-items: center; background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0;">
+    <!-- BUG 2: Missing alt attribute on product image -->
+    <img src="https://placehold.co/96x64/2f3cff/ffffff?text=LENS+KIT" style="border-radius: 6px;" />
+    <div>
+      <div style="font-weight: 700; font-size: 14px;">$299.00 USD</div>
+      <!-- BUG 3: Low contrast text -->
+      <p style="color: #c4c4cc; background: #f8fafc; font-size: 12px; margin: 4px 0 0 0;">
+        Includes machined anodized lens mount &amp; diopter case.
+      </p>
+    </div>
+  </div>
+
+  <div style="margin-top: 14px; display: flex; gap: 8px; align-items: center;">
+    <!-- BUG 4: Unlabeled input + undersized unlabeled button -->
+    <input type="text" placeholder="Enter VIP promo code" style="flex: 1; padding: 6px 10px; border: 1px solid #d4d4d8; border-radius: 6px; font-size: 12px;" />
+    <button type="button" style="width: 28px; height: 28px; background: #0e0e10; color: #ffffff; border: none; border-radius: 6px;"></button>
   </div>
 </div>`,
-    fixedHtml: `<div style="padding: 20px; font-family: system-ui, sans-serif; background: #ffffff; color: #0e0e10;">
-  <h1 style="font-size: 20px; font-weight: 700; margin: 0;">Express Checkout</h1>
-  <h2 style="font-size: 15px; margin-top: 10px;">Order Item</h2>
-  <img src="https://placehold.co/100x48/2f3cff/ffffff?text=LENS+PRO" alt="Aperture Lens Pro Hardware Calibration Kit" style="margin-top: 8px; border-radius: 6px;" />
-  <p style="color: #3f3f46; background: #ffffff; font-size: 13px; margin-top: 8px;">
-    Non-refundable digital license key.
-  </p>
-  <div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
-    <label for="discount-code" style="font-size: 13px; font-weight: 600; color: #0e0e10;">Promo Code</label>
-    <input id="discount-code" type="text" style="min-height: 44px; padding: 0 10px; border: 1px solid #555; border-radius: 6px;" />
-    <button type="button" style="min-height: 44px; min-width: 88px; padding: 0 14px; background: #0e0e10; color: #ffffff; border: none; border-radius: 6px; font-weight: 600;">
-      Apply
+    fixedHtml: `<div style="padding: 24px; font-family: system-ui, sans-serif; background: #ffffff; color: #0e0e10; border-radius: 12px; border: 1px solid #d4d4d8;">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <h1 style="font-size: 20px; font-weight: 800; margin: 0;">Express Bag (1 Item)</h1>
+    <span style="font-size: 12px; color: #b91c1c; background: #fef2f2; padding: 3px 8px; border-radius: 6px; font-weight: 700;">
+      ⚠ Only 2 Left in Stock
+    </span>
+  </div>
+
+  <h2 style="font-size: 15px; margin: 14px 0 8px 0; color: #18181b;">
+    Optical Calibration Kit Pro
+  </h2>
+
+  <div style="display: flex; gap: 14px; align-items: center; background: #f4f4f6; padding: 12px; border-radius: 10px; border: 1px solid #d4d4d8;">
+    <img src="https://placehold.co/96x64/2f3cff/ffffff?text=LENS+KIT" alt="Aperture Optical Calibration Kit Pro in anodized aluminum case" style="border-radius: 6px;" />
+    <div>
+      <div style="font-weight: 700; font-size: 14px;">$299.00 USD</div>
+      <p style="color: #3f3f46; background: #f4f4f6; font-size: 12.5px; margin: 4px 0 0 0;">
+        Includes machined anodized lens mount &amp; diopter case.
+      </p>
+    </div>
+  </div>
+
+  <div style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+    <label for="vip-promo" style="font-size: 12px; font-weight: 700; color: #0e0e10;">Promo Code</label>
+    <input id="vip-promo" type="text" style="flex: 1; min-height: 44px; padding: 0 12px; border: 1px solid #52525b; border-radius: 8px; font-size: 13px;" />
+    <button type="button" style="min-height: 44px; min-width: 100px; padding: 0 16px; background: #0e0e10; color: #ffffff; border: none; border-radius: 8px; font-weight: 700; font-size: 12px;">
+      Apply Code
     </button>
   </div>
 </div>`,
   },
   {
     id: "healthcare",
-    name: "Clinical Portal",
+    name: "Clinical Telemetry",
     tag: "FORMS & HEADINGS",
-    flawedHtml: `<div style="padding: 20px; font-family: system-ui, sans-serif; background: #ffffff; color: #0e0e10;">
-  <h1 style="font-size: 20px; font-weight: 700; margin: 0;">Patient Prescription Refill</h1>
-  <h4 style="font-size: 14px; margin-top: 6px;">Dosage Verification</h4>
-  <p style="color: #babac4; background: #ffffff; font-size: 12px; margin-top: 6px;">
-    Take 1 tablet every 12 hours with water. Do not exceed 2 tablets daily.
+    flawedHtml: `<div style="padding: 24px; font-family: system-ui, sans-serif; background: #ffffff; color: #0e0e10; border-radius: 12px; border: 1px solid #e2e8f0;">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <h1 style="font-size: 19px; font-weight: 800; margin: 0;">Ophthalmology Rx Portal</h1>
+    <span style="font-size: 11px; font-family: monospace; color: #64748b;">PT-ID // 8841-A</span>
+  </div>
+  <h4 style="font-size: 14px; margin-top: 10px; color: #0f172a;">Dosage &amp; Diopter Verification</h4>
+  <p style="color: #cbd5e1; background: #ffffff; font-size: 12.5px; margin-top: 6px;">
+    Apply 1 sterile drop every 12 hours. Avoid bright uncalibrated screens.
   </p>
-  <div style="margin-top: 12px;">
-    <select style="padding: 4px; border: 1px solid #ccc;">
-      <option>Select Pharmacy</option>
+  <div style="margin-top: 14px; display: flex; gap: 8px; align-items: center;">
+    <select style="padding: 5px; border: 1px solid #cbd5e1; border-radius: 6px;">
+      <option>Select Dispensing Clinic</option>
     </select>
-    <button type="button" style="width: 24px; height: 24px; margin-left: 6px;"></button>
+    <button type="button" style="width: 24px; height: 24px; background: #0284c7; color: #fff; border: none; border-radius: 4px;"></button>
   </div>
 </div>`,
-    fixedHtml: `<div style="padding: 20px; font-family: system-ui, sans-serif; background: #ffffff; color: #0e0e10;">
-  <h1 style="font-size: 20px; font-weight: 700; margin: 0;">Patient Prescription Refill</h1>
-  <h2 style="font-size: 14px; margin-top: 6px;">Dosage Verification</h2>
-  <p style="color: #27272a; background: #ffffff; font-size: 13px; margin-top: 6px;">
-    Take 1 tablet every 12 hours with water. Do not exceed 2 tablets daily.
+    fixedHtml: `<div style="padding: 24px; font-family: system-ui, sans-serif; background: #ffffff; color: #0e0e10; border-radius: 12px; border: 1px solid #cbd5e1;">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <h1 style="font-size: 19px; font-weight: 800; margin: 0;">Ophthalmology Rx Portal</h1>
+    <span style="font-size: 11px; font-family: monospace; color: #334155; font-weight: 700;">PT-ID // 8841-A</span>
+  </div>
+  <h2 style="font-size: 15px; margin-top: 10px; color: #0f172a;">Dosage &amp; Diopter Verification</h2>
+  <p style="color: #334155; background: #ffffff; font-size: 13px; margin-top: 6px;">
+    Apply 1 sterile drop every 12 hours. Avoid bright uncalibrated screens.
   </p>
-  <div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
-    <label for="pharmacy-select" style="font-size: 13px; font-weight: 600; color: #0e0e10;">Pharmacy</label>
-    <select id="pharmacy-select" style="min-height: 44px; padding: 0 12px; border: 1px solid #444; border-radius: 6px;">
-      <option>Central Clinic Pharmacy</option>
+  <div style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+    <label for="clinic-select" style="font-size: 12.5px; font-weight: 700; color: #0f172a;">Clinic</label>
+    <select id="clinic-select" style="min-height: 44px; padding: 0 12px; border: 1px solid #334155; border-radius: 8px; font-size: 13px;">
+      <option>Central Optical Clinic</option>
     </select>
-    <button type="button" style="min-height: 44px; min-width: 120px; padding: 0 14px; background: #2f3cff; color: #ffffff; border: none; border-radius: 6px; font-weight: 600;">
-      Request Refill
+    <button type="button" style="min-height: 44px; min-width: 130px; padding: 0 16px; background: #0369a1; color: #ffffff; border: none; border-radius: 8px; font-weight: 700; font-size: 12px;">
+      Confirm Refill ✓
     </button>
   </div>
 </div>`,
@@ -117,37 +208,52 @@ const SANDBOX_PRESETS: SandboxPreset[] = [
 
 export default function PlaygroundPage() {
   const previewRef = useRef<HTMLDivElement>(null);
+  const { reduceMotion } = usePreferences();
+
   const [activePreset, setActivePreset] = useState<SandboxPreset>(
     SANDBOX_PRESETS[0]!
   );
   const [htmlCode, setHtmlCode] = useState(SANDBOX_PRESETS[0]!.flawedHtml);
   const [sim, setSim] = useState<SimulationType>("none");
+  const [intensity, setIntensity] = useState(65);
+  const [xrayMode, setXrayMode] = useState(false);
+
+  // Starts UNSCANNED (null) until user explicitly clicks Scan or Auto-Remediate!
   const [report, setReport] = useState<AuditReport | null>(null);
+  const [isScanning, setIsScanning] = useState(false);
   const [isRemediated, setIsRemediated] = useState(false);
 
-  const runSandboxScan = () => {
-    if (!previewRef.current) return;
-    const res = runDomAudit(previewRef.current);
-    setReport(res);
-  };
+  const triggerScanWithLaser = (afterRemediate = false) => {
+    setIsScanning(true);
 
-  // Automatically audit whenever HTML changes and DOM updates
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      runSandboxScan();
-    }, 60);
-    return () => window.clearTimeout(timer);
-  }, [htmlCode]);
+    const delay = reduceMotion ? 40 : 620;
+    window.setTimeout(() => {
+      if (previewRef.current) {
+        const res = runDomAudit(previewRef.current);
+        setReport(res);
+      }
+      setIsScanning(false);
+      if (afterRemediate) setIsRemediated(true);
+    }, delay);
+  };
 
   const handleSelectPreset = (preset: SandboxPreset) => {
     setActivePreset(preset);
     setIsRemediated(false);
+    setReport(null); // Reset score back to Standby until scanned
     setHtmlCode(preset.flawedHtml);
   };
 
   const handleAutoRemediate = () => {
-    setIsRemediated(true);
     setHtmlCode(activePreset.fixedHtml);
+    setIsRemediated(true);
+    triggerScanWithLaser(true);
+  };
+
+  const handleResetFlawed = () => {
+    setHtmlCode(activePreset.flawedHtml);
+    setIsRemediated(false);
+    setReport(null);
   };
 
   const handleExportJson = () => {
@@ -177,7 +283,7 @@ export default function PlaygroundPage() {
     URL.revokeObjectURL(url);
   };
 
-  const getPreviewFilter = (mode: SimulationType): string => {
+  const getPreviewFilter = (mode: SimulationType, val: number): string => {
     switch (mode) {
       case "protanopia":
         return "url(#showcase-protanopia)";
@@ -188,11 +294,16 @@ export default function PlaygroundPage() {
       case "achromatopsia":
         return "url(#showcase-achromatopsia)";
       case "cataracts":
-        return "blur(2.4px) sepia(0.45) contrast(0.78)";
+        return `blur(${(1 + (val / 100) * 3.5).toFixed(1)}px) sepia(${(
+          0.25 +
+          (val / 100) * 0.4
+        ).toFixed(2)}) contrast(0.78)`;
       case "low-vision":
-        return "blur(3.2px)";
+        return `blur(${(1.2 + (val / 100) * 5).toFixed(1)}px)`;
       case "low-contrast":
-        return "contrast(0.4)";
+        return "contrast(0.38)";
+      case "glare":
+        return "brightness(1.35) contrast(0.75) saturate(0.85)";
       default:
         return "none";
     }
@@ -201,46 +312,41 @@ export default function PlaygroundPage() {
   return (
     <div className="mx-auto max-w-[1280px] px-4 sm:px-8">
       <div className="border-x border-b py-12 px-6 sm:px-12">
-        <div className="flex flex-wrap items-end justify-between gap-4">
+        {/* Top Workbench Header */}
+        <div className="flex flex-wrap items-end justify-between gap-4 border-b pb-6">
           <div>
             <div
               style={{ fontFamily: "var(--font-mono)" }}
-              className="text-xs uppercase tracking-[0.14em] text-[var(--muted)]"
+              className="flex items-center gap-2 text-xs uppercase tracking-[0.14em] text-[var(--muted)]"
             >
-              SANDBOX // INDUSTRY TEMPLATES &amp; AUTO-REMEDIATION ENGINE
+              <span className="h-2 w-2 rounded-full bg-[var(--accent)] animate-pulse" />
+              <span>OPTICAL DIAGNOSTIC WORKBENCH // LIVE DOM SANDBOX</span>
             </div>
-            <h1 className="mt-2 text-3xl sm:text-4xl font-bold tracking-[-0.04em]">
-              Interactive HTML{" "}
+            <h1 className="mt-2 text-3xl sm:text-5xl font-bold tracking-[-0.04em]">
+              Inspect, break, and{" "}
               <span
                 style={{
                   fontFamily: "var(--font-serif)",
                   color: "var(--accent)",
                 }}
-                className="font-normal italic tracking-normal"
+                className="font-normal italic tracking-normal px-1"
               >
-                testbench
-              </span>
+                auto-heal
+              </span>{" "}
+              HTML.
             </h1>
           </div>
 
-          {/* Simulation Dropdown + Auto-Fix + Export JSON */}
+          {/* Primary Action Deck */}
           <div className="flex flex-wrap items-center gap-2.5">
-            <label htmlFor="sandbox-sim-select" className="sr-only">
-              Select Sandbox Simulation
-            </label>
-            <select
-              id="sandbox-sim-select"
-              value={sim}
-              onChange={(e) => setSim(e.target.value as SimulationType)}
+            <button
+              type="button"
+              onClick={() => triggerScanWithLaser(false)}
               style={{ fontFamily: "var(--font-mono)" }}
-              className="min-h-[44px] rounded-lg border bg-[var(--surface)] px-3 text-xs uppercase"
+              className="min-h-[44px] cursor-pointer rounded-lg border bg-[var(--surface)] px-4 text-xs font-bold uppercase tracking-wider transition-colors hover:border-[var(--accent)]"
             >
-              {SIMULATION_CATALOG.slice(0, 8).map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.label}
-                </option>
-              ))}
-            </select>
+              {isScanning ? "Scanning DOM..." : "🔍 Scan Specimen"}
+            </button>
 
             <button
               type="button"
@@ -250,9 +356,11 @@ export default function PlaygroundPage() {
                 color: "var(--accent-ink)",
                 fontFamily: "var(--font-mono)",
               }}
-              className="min-h-[44px] cursor-pointer rounded-lg px-4 text-xs font-bold uppercase tracking-wider shadow-sm transition-opacity hover:opacity-90"
+              className="min-h-[44px] cursor-pointer rounded-lg px-4 text-xs font-bold uppercase tracking-wider shadow-sm transition-transform active:scale-95"
             >
-              {isRemediated ? "✓ Remediated (100/100)" : "⚡ Auto-Remediate DOM"}
+              {isRemediated
+                ? "✓ Remediated (100/100)"
+                : "✨ Auto-Remediate & Scan"}
             </button>
 
             <button
@@ -266,121 +374,273 @@ export default function PlaygroundPage() {
           </div>
         </div>
 
-        {/* Industry Template Selector Row */}
-        <div
-          role="group"
-          aria-label="Load industry UI template"
-          className="mt-6 flex flex-wrap items-center gap-2.5"
-        >
-          <span
-            style={{ fontFamily: "var(--font-mono)" }}
-            className="text-xs uppercase text-[var(--muted)] mr-1"
+        {/* Preset Selector + Optical Controls Bar */}
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-xl border bg-[var(--surface)] p-3.5">
+          <div
+            role="group"
+            aria-label="Load industry UI template"
+            className="flex flex-wrap items-center gap-2"
           >
-            PRESET TEMPLATES:
-          </span>
-          {SANDBOX_PRESETS.map((preset) => {
-            const active = activePreset.id === preset.id;
-            return (
-              <button
-                key={preset.id}
-                type="button"
-                onClick={() => handleSelectPreset(preset)}
-                aria-pressed={active}
-                style={{
-                  fontFamily: "var(--font-mono)",
-                  backgroundColor: active ? "var(--ink)" : "var(--surface)",
-                  color: active ? "var(--bg)" : "var(--ink)",
-                }}
-                className="min-h-[44px] cursor-pointer rounded-lg border px-3.5 text-xs font-medium uppercase tracking-wider transition-colors"
-              >
-                {preset.name}{" "}
-                <span className="opacity-65 ml-1">[{preset.tag}]</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Two-Column HTML Editor & Filtered Live Preview */}
-        <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12">
-          <div className="lg:col-span-6 flex flex-col">
-            <label
-              htmlFor="raw-html-input"
+            <span
               style={{ fontFamily: "var(--font-mono)" }}
-              className="mb-2 text-xs uppercase text-[var(--muted)]"
+              className="text-[11px] uppercase text-[var(--muted)] px-2"
             >
-              1. LIVE HTML SOURCE ({isRemediated ? "REMEDIATED WCAG AA/AAA" : "DELIBERATELY FLAWED SPECIMEN"})
-            </label>
-            <textarea
-              id="raw-html-input"
-              value={htmlCode}
-              onChange={(e) => {
-                setIsRemediated(false);
-                setHtmlCode(e.target.value);
-              }}
-              rows={15}
-              style={{ fontFamily: "var(--font-mono)" }}
-              className="w-full flex-1 rounded-xl border bg-[var(--surface)] p-4 text-xs leading-relaxed"
-            />
+              SPECIMENS:
+            </span>
+            {SANDBOX_PRESETS.map((preset) => {
+              const active = activePreset.id === preset.id;
+              return (
+                <button
+                  key={preset.id}
+                  type="button"
+                  onClick={() => handleSelectPreset(preset)}
+                  aria-pressed={active}
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    backgroundColor: active ? "var(--ink)" : "var(--bg)",
+                    color: active ? "var(--bg)" : "var(--ink)",
+                  }}
+                  className="min-h-[44px] cursor-pointer rounded-lg border px-3.5 text-xs font-semibold uppercase tracking-wider transition-colors"
+                >
+                  {preset.name}
+                </button>
+              );
+            })}
           </div>
 
+          {/* Optical Filter + Intensity + X-Ray Toggle */}
+          <div className="flex flex-wrap items-center gap-3">
+            <label htmlFor="sandbox-sim-select" className="sr-only">
+              Select Sandbox Simulation
+            </label>
+            <select
+              id="sandbox-sim-select"
+              value={sim}
+              onChange={(e) => setSim(e.target.value as SimulationType)}
+              style={{ fontFamily: "var(--font-mono)" }}
+              className="min-h-[44px] rounded-lg border bg-[var(--bg)] px-3 text-xs font-semibold uppercase"
+            >
+              {SIMULATION_CATALOG.slice(0, 10).map((item) => (
+                <option key={item.id} value={item.id}>
+                  LENS: {item.label}
+                </option>
+              ))}
+            </select>
+
+            {(sim === "cataracts" || sim === "low-vision") && (
+              <div className="flex items-center gap-2 rounded-lg border bg-[var(--bg)] px-3 min-h-[44px]">
+                <label
+                  htmlFor="sandbox-diopter"
+                  style={{ fontFamily: "var(--font-mono)" }}
+                  className="text-[11px] text-[var(--muted)]"
+                >
+                  {intensity}%
+                </label>
+                <input
+                  id="sandbox-diopter"
+                  type="range"
+                  min={15}
+                  max={100}
+                  value={intensity}
+                  onChange={(e) => setIntensity(Number(e.target.value))}
+                  className="w-20 accent-[var(--accent)] cursor-pointer"
+                />
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={() => setXrayMode(!xrayMode)}
+              aria-pressed={xrayMode}
+              style={{
+                fontFamily: "var(--font-mono)",
+                backgroundColor: xrayMode ? "var(--accent)" : "var(--bg)",
+                color: xrayMode ? "var(--accent-ink)" : "var(--ink)",
+              }}
+              className="min-h-[44px] cursor-pointer rounded-lg border px-3.5 text-xs font-semibold uppercase tracking-wider"
+            >
+              {xrayMode ? "▣ X-Ray: ON" : "▢ X-Ray Wireframe"}
+            </button>
+          </div>
+        </div>
+
+        {/* Two-Column Workbench Grid */}
+        <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12">
+          {/* Left 6 Columns: Live HTML Code Editor */}
           <div className="lg:col-span-6 flex flex-col">
             <div
               style={{ fontFamily: "var(--font-mono)" }}
-              className="mb-2 flex justify-between text-xs uppercase text-[var(--muted)]"
+              className="mb-2 flex items-center justify-between text-xs uppercase text-[var(--muted)]"
             >
-              <span>2. RENDERED VIEWPORT ({sim.toUpperCase()})</span>
-              {report && (
-                <span
-                  aria-live="polite"
-                  className="font-bold text-[var(--accent)]"
+              <span>
+                01 // RAW DOM SOURCE (
+                {isRemediated ? "REMEDIATED WCAG AA/AAA" : "UNPATCHED SPECIMEN"}
+                )
+              </span>
+              {isRemediated && (
+                <button
+                  type="button"
+                  onClick={handleResetFlawed}
+                  className="min-h-[44px] cursor-pointer rounded border px-2.5 text-[11px] text-[var(--accent)] hover:underline"
                 >
-                  SCORE: {report.score} / 100 ({report.issues.length} ISSUES)
-                </span>
+                  ↺ Reset to Flawed HTML
+                </button>
               )}
             </div>
 
-            <div
-              ref={previewRef}
-              data-lens-ignore="true"
-              style={{ filter: getPreviewFilter(sim) }}
-              className="min-h-[250px] rounded-xl border bg-white text-slate-900 p-4 overflow-auto"
-              dangerouslySetInnerHTML={{ __html: htmlCode }}
-            />
+            <div className="relative flex-1 overflow-hidden rounded-xl border bg-[#0b0b0f] text-[#e4e4ef] shadow-inner">
+              <div
+                style={{ fontFamily: "var(--font-mono)" }}
+                className="flex items-center justify-between border-b border-white/10 bg-[#121218] px-4 py-2 text-[11px] text-[#8e8ea0]"
+              >
+                <span className="flex items-center gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-full bg-rose-500/80" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-amber-500/80" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/80" />
+                  <span className="ml-2">{activePreset.id}-specimen.html</span>
+                </span>
+                <span>UTF-8 // LIVE EDITABLE</span>
+              </div>
+              <textarea
+                id="raw-html-input"
+                aria-label="Live HTML Source Editor"
+                value={htmlCode}
+                onChange={(e) => {
+                  setIsRemediated(false);
+                  setReport(null);
+                  setHtmlCode(e.target.value);
+                }}
+                rows={18}
+                style={{ fontFamily: "var(--font-mono)" }}
+                className="w-full bg-transparent p-4 text-xs leading-relaxed text-[#e4e4ef] focus:outline-none"
+              />
+            </div>
+          </div>
 
-            {/* Audit Results List */}
-            {report && (
-              <div className="mt-4 rounded-xl border bg-[var(--surface)] p-4 space-y-2 max-h-60 overflow-y-auto">
+          {/* Right 6 Columns: Live Optical Viewport + Telemetry Drawer */}
+          <div className="lg:col-span-6 flex flex-col">
+            <div
+              style={{ fontFamily: "var(--font-mono)" }}
+              className="mb-2 flex items-center justify-between text-xs uppercase text-[var(--muted)]"
+            >
+              <span>02 // OPTICAL VIEWPORT ({sim.toUpperCase()})</span>
+              <span
+                aria-live="polite"
+                className={`rounded border px-2.5 py-0.5 font-bold ${
+                  !report
+                    ? "text-[var(--muted)]"
+                    : report.score === 100
+                    ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400"
+                    : "border-rose-500/40 bg-rose-500/10 text-rose-400"
+                }`}
+              >
+                {!report
+                  ? "STATUS: UNSCANNED (CLICK SCAN ABOVE)"
+                  : `WCAG SCORE: ${report.score} / 100 (${report.issues.length} ISSUES)`}
+              </span>
+            </div>
+
+            {/* Outer wrapper has data-lens-ignore so global HUD ignores it,
+                while inner previewRef does NOT have data-lens-ignore so sandbox scanner works! */}
+            <div
+              data-lens-ignore="true"
+              className="relative overflow-hidden rounded-xl border bg-[var(--surface)] p-5"
+            >
+              {/* Animated Laser Sweep Overlay during Scan */}
+              {isScanning && (
                 <div
-                  style={{ fontFamily: "var(--font-mono)" }}
-                  className="flex items-center justify-between text-xs font-bold uppercase"
-                >
-                  <span>
-                    {report.issues.length === 0
-                      ? "✓ ZERO WCAG VIOLATIONS DETECTED"
-                      : `DETECTED DEFECTS (${report.issues.length})`}
-                  </span>
-                  {!isRemediated && report.issues.length > 0 && (
-                    <span className="text-[var(--accent)]">
-                      Click &quot;⚡ Auto-Remediate DOM&quot; above to fix all
-                    </span>
-                  )}
-                </div>
-                {report.issues.map((issue) => (
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-x-0 top-0 z-30 h-1.5 bg-[var(--accent)] shadow-[0_0_24px_var(--accent)] animate-bounce"
+                  style={{ animationDuration: "550ms" }}
+                />
+              )}
+
+              {/* X-Ray Wireframe CSS Injection */}
+              {xrayMode && (
+                <style>{`
+                  .sandbox-xray * {
+                    outline: 1px dashed rgba(154, 165, 255, 0.65) !important;
+                    position: relative;
+                  }
+                `}</style>
+              )}
+
+              <div
+                ref={previewRef}
+                style={{ filter: getPreviewFilter(sim, intensity) }}
+                className={`transition-all duration-300 ${
+                  xrayMode ? "sandbox-xray" : ""
+                }`}
+                dangerouslySetInnerHTML={{ __html: htmlCode }}
+              />
+            </div>
+
+            {/* Audit Telemetry Drawer */}
+            <div className="mt-4 flex-1 rounded-xl border bg-[var(--surface)] p-5">
+              {!report ? (
+                <div className="flex h-full flex-col items-center justify-center py-6 text-center">
                   <div
-                    key={issue.id}
-                    className="rounded-lg border bg-[var(--bg)] p-2.5 text-xs"
+                    style={{ fontFamily: "var(--font-mono)" }}
+                    className="rounded-full border px-3 py-1 text-[11px] uppercase tracking-widest text-[var(--muted)]"
                   >
-                    <span className="font-mono font-bold text-[var(--accent)]">
-                      [{issue.ruleId}]
-                    </span>{" "}
-                    <span className="font-semibold">{issue.title}</span> —{" "}
+                    DIAGNOSTIC STANDBY
+                  </div>
+                  <p className="mt-2 max-w-md text-xs text-[var(--muted)]">
+                    Click <strong>&quot;🔍 Scan Specimen&quot;</strong> to run
+                    the 8-rule WCAG 2.1 DOM auditor on the flawed UI, or click{" "}
+                    <strong>&quot;✨ Auto-Remediate &amp; Scan&quot;</strong> to
+                    patch all defects and verify a 100/100 score.
+                  </p>
+                </div>
+              ) : report.issues.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-6 text-center">
+                  <div
+                    style={{ fontFamily: "var(--font-mono)" }}
+                    className="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-emerald-400"
+                  >
+                    ✓ 100 / 100 — ZERO WCAG VIOLATIONS
+                  </div>
+                  <p className="mt-2 max-w-md text-xs text-[var(--muted)]">
+                    Every heading hierarchy, relative luminance contrast ratio,
+                    form label, and 44×44px touch target inside the specimen
+                    passed verification.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-2.5 max-h-56 overflow-y-auto pr-1">
+                  <div
+                    style={{ fontFamily: "var(--font-mono)" }}
+                    className="flex items-center justify-between text-xs font-bold uppercase"
+                  >
+                    <span className="text-rose-400">
+                      ⚠ {report.issues.length} ACCESSIBILITY DEFECTS DETECTED
+                    </span>
                     <span className="text-[var(--muted)]">
-                      {issue.fixSuggestion}
+                      CLICK AUTO-REMEDIATE TO PATCH
                     </span>
                   </div>
-                ))}
-              </div>
-            )}
+                  {report.issues.map((issue) => (
+                    <div
+                      key={issue.id}
+                      className="rounded-lg border bg-[var(--bg)] p-3 text-xs space-y-1"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono font-bold text-rose-400 uppercase">
+                          [{issue.ruleId}] {issue.title}
+                        </span>
+                        <span className="font-mono text-[10px] text-[var(--muted)]">
+                          {issue.selector}
+                        </span>
+                      </div>
+                      <p className="text-[var(--muted)]">{issue.whyItMatters}</p>
+                      <p className="font-mono text-[11px] text-[var(--accent)]">
+                        Fix: {issue.fixSuggestion}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

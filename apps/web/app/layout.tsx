@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OpticalBootSequence } from "@/components/ui/OpticalBootSequence";
 import { FloatingOptics } from "@/components/ui/FloatingOptics";
 import { KonamiEasterEgg } from "@/components/ui/KonamiEasterEgg";
 import {
@@ -64,6 +65,7 @@ export default function RootLayout({
           Skip to main content
         </a>
         <ThemeProvider>
+          <OpticalBootSequence />
           <Navbar />
           <ScrollRuler />
           <FloatingOptics />
