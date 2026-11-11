@@ -22,10 +22,10 @@ const SANDBOX_PRESETS: SandboxPreset[] = [
     id: "fintech",
     name: "Fintech Terminal",
     tag: "CONTRAST & TARGETS",
-    flawedHtml: `<div style="padding: 24px; font-family: system-ui, -apple-system, sans-serif; background: #0d0e12; color: #f2f2f5; border-radius: 12px; border: 1px solid #232530;">
+    flawedHtml: `<div style="padding: 22px; font-family: system-ui, -apple-system, sans-serif; background: #0d0e12; color: #f2f2f5; border-radius: 12px; border: 1px solid #232530;">
   <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e2029; padding-bottom: 14px;">
     <div>
-      <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #52525e;">LIQUIDITY POOL // USD-USDC</span>
+      <span style="font-size: 10px; font-family: monospace; text-transform: uppercase; letter-spacing: 0.12em; color: #71717a;">LIQUIDITY POOL // USD-USDC</span>
       <h1 style="font-size: 24px; font-weight: 800; margin: 4px 0 0 0; letter-spacing: -0.03em;">$142,850.40</h1>
     </div>
     <span style="background: rgba(225, 29, 72, 0.15); color: #f43f5e; padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 700;">
@@ -38,9 +38,9 @@ const SANDBOX_PRESETS: SandboxPreset[] = [
     Instant Wire Execution (Skipped h2/h3!)
   </h4>
 
-  <!-- BUG 2: Low contrast text (#474854 on #0d0e12 = 2.1:1 ratio) -->
-  <p style="color: #474854; background: #0d0e12; font-size: 12.5px; line-height: 1.5; margin: 0;">
-     Institutional settlement fee of 0.15% applies to cross-border SWIFT routing. (Fails WCAG 4.5:1)
+  <!-- BUG 2: Low contrast text (#383942 on #0d0e12 = 1.65:1 ratio) -->
+  <p style="color: #383942; background: #0d0e12; font-size: 12.5px; line-height: 1.5; margin: 0;">
+    Institutional settlement fee of 0.15% applies to cross-border SWIFT routing. (Fails WCAG 4.5:1)
   </p>
 
   <div style="margin-top: 16px; display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; background: #14161d; padding: 12px; border-radius: 10px; border: 1px solid #232530;">
@@ -50,17 +50,17 @@ const SANDBOX_PRESETS: SandboxPreset[] = [
       placeholder="Enter wire amount in USD..."
       style="width: 100%; padding: 8px 12px; background: #0d0e12; color: #ffffff; border: 1px solid #2e303e; border-radius: 6px; font-size: 13px;"
     />
-    <!-- BUG 4: 26x26px undersized icon button with no accessible name -->
+    <!-- BUG 4 & 5: 26x26px undersized icon button with no accessible name -->
     <button
       type="button"
       style="width: 26px; height: 26px; background: #2f3cff; color: #ffffff; border: none; border-radius: 6px; cursor: pointer;"
     ></button>
   </div>
 </div>`,
-    fixedHtml: `<div style="padding: 24px; font-family: system-ui, -apple-system, sans-serif; background: #0d0e12; color: #f2f2f5; border-radius: 12px; border: 1px solid #2e3244;">
+    fixedHtml: `<div style="padding: 22px; font-family: system-ui, -apple-system, sans-serif; background: #0d0e12; color: #f2f2f5; border-radius: 12px; border: 1px solid #2e3244;">
   <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #232634; padding-bottom: 14px;">
     <div>
-      <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #a0a3b1;">LIQUIDITY POOL // USD-USDC</span>
+      <span style="font-size: 10px; font-family: monospace; text-transform: uppercase; letter-spacing: 0.12em; color: #a1a1aa;">LIQUIDITY POOL // USD-USDC</span>
       <h1 style="font-size: 24px; font-weight: 800; margin: 4px 0 0 0; letter-spacing: -0.03em;">$142,850.40</h1>
     </div>
     <span style="background: rgba(244, 63, 94, 0.2); color: #fda4af; border: 1px solid rgba(244, 63, 94, 0.4); padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 700;">
@@ -68,28 +68,24 @@ const SANDBOX_PRESETS: SandboxPreset[] = [
     </span>
   </div>
 
-  <!-- FIXED 1: Sequential h2 heading -->
   <h2 style="font-size: 14px; font-weight: 700; margin: 16px 0 6px 0; color: #f2f2f5;">
     Instant Wire Execution (Sequential &lt;h2&gt;)
   </h2>
 
-  <!-- FIXED 2: High contrast #b4b7c5 on #0d0e12 (8.4:1 AAA ratio) -->
   <p style="color: #b4b7c5; background: #0d0e12; font-size: 13px; line-height: 1.5; margin: 0;">
     Institutional settlement fee of 0.15% applies to cross-border SWIFT routing. (Verified 8.4:1 AAA Contrast)
   </p>
 
   <div style="margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; background: #14161d; padding: 14px; border-radius: 10px; border: 1px solid #2e3244;">
-    <!-- FIXED 3: Explicit programmatic <label> -->
     <label for="wire-usd-input" style="font-size: 12px; font-weight: 700; color: #f2f2f5;">
       Wire Amount (USD)
     </label>
     <input
       id="wire-usd-input"
       type="number"
-      defaultValue="2500"
+      value="2500"
       style="flex: 1; min-height: 44px; padding: 0 12px; background: #0d0e12; color: #ffffff; border: 1px solid #4a4e69; border-radius: 8px; font-size: 13px;"
     />
-    <!-- FIXED 4: 44px minimum target size + descriptive label -->
     <button
       type="button"
       aria-label="Execute Instant Wire Transfer"
@@ -104,62 +100,74 @@ const SANDBOX_PRESETS: SandboxPreset[] = [
     id: "ecommerce",
     name: "Luxury Checkout",
     tag: "ALT TEXT & LABELS",
-    flawedHtml: `<div style="padding: 24px; font-family: system-ui, sans-serif; background: #ffffff; color: #0e0e10; border-radius: 12px; border: 1px solid #e4e4e7;">
-  <div style="display: flex; justify-content: space-between; align-items: center;">
-    <h1 style="font-size: 20px; font-weight: 800; margin: 0;">Express Bag (1 Item)</h1>
-    <span style="font-size: 12px; color: #ef4444; font-weight: 600;">● Low Stock</span>
-  </div>
-
-  <!-- BUG 1: Skipped heading h1 -> h4 -->
-  <h4 style="font-size: 14px; margin: 14px 0 8px 0; color: #27272a;">
-    Optical Calibration Kit Pro
-  </h4>
-
-  <div style="display: flex; gap: 14px; align-items: center; background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0;">
-    <!-- BUG 2: Missing alt attribute on product image -->
-    <img src="https://placehold.co/96x64/2f3cff/ffffff?text=LENS+KIT" style="border-radius: 6px;" />
+    flawedHtml: `<div style="padding: 22px; font-family: system-ui, -apple-system, sans-serif; background: #0e0e14; color: #f4f4f6; border-radius: 12px; border: 1px solid #27273a;">
+  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e1e2d; padding-bottom: 12px;">
     <div>
-      <div style="font-weight: 700; font-size: 14px;">$299.00 USD</div>
-      <!-- BUG 3: Low contrast text -->
-      <p style="color: #c4c4cc; background: #f8fafc; font-size: 12px; margin: 4px 0 0 0;">
-        Includes machined anodized lens mount &amp; diopter case.
-      </p>
+      <span style="font-size: 10px; font-family: monospace; letter-spacing: 0.14em; color: #8e8ea0;">ATELIER OPTICS // ORDER #AP-904</span>
+      <h1 style="font-size: 20px; font-weight: 800; margin: 3px 0 0 0;">VIP Allocation Bag</h1>
     </div>
-  </div>
-
-  <div style="margin-top: 14px; display: flex; gap: 8px; align-items: center;">
-    <!-- BUG 4: Unlabeled input + undersized unlabeled button -->
-    <input type="text" placeholder="Enter VIP promo code" style="flex: 1; padding: 6px 10px; border: 1px solid #d4d4d8; border-radius: 6px; font-size: 12px;" />
-    <button type="button" style="width: 28px; height: 28px; background: #0e0e10; color: #ffffff; border: none; border-radius: 6px;"></button>
-  </div>
-</div>`,
-    fixedHtml: `<div style="padding: 24px; font-family: system-ui, sans-serif; background: #ffffff; color: #0e0e10; border-radius: 12px; border: 1px solid #d4d4d8;">
-  <div style="display: flex; justify-content: space-between; align-items: center;">
-    <h1 style="font-size: 20px; font-weight: 800; margin: 0;">Express Bag (1 Item)</h1>
-    <span style="font-size: 12px; color: #b91c1c; background: #fef2f2; padding: 3px 8px; border-radius: 6px; font-weight: 700;">
-      ⚠ Only 2 Left in Stock
+    <span style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;">
+      ● 1 UNIT RESERVED
     </span>
   </div>
 
-  <h2 style="font-size: 15px; margin: 14px 0 8px 0; color: #18181b;">
-    Optical Calibration Kit Pro
-  </h2>
+  <!-- BUG 1: Skipped heading h1 -> h4 -->
+  <h4 style="font-size: 13px; margin: 14px 0 8px 0; color: #d4d4d8;">
+    Leica-Mount Diopter Calibration Kit (Skipped h2/h3!)
+  </h4>
 
-  <div style="display: flex; gap: 14px; align-items: center; background: #f4f4f6; padding: 12px; border-radius: 10px; border: 1px solid #d4d4d8;">
-    <img src="https://placehold.co/96x64/2f3cff/ffffff?text=LENS+KIT" alt="Aperture Optical Calibration Kit Pro in anodized aluminum case" style="border-radius: 6px;" />
-    <div>
-      <div style="font-weight: 700; font-size: 14px;">$299.00 USD</div>
-      <p style="color: #3f3f46; background: #f4f4f6; font-size: 12.5px; margin: 4px 0 0 0;">
-        Includes machined anodized lens mount &amp; diopter case.
-      </p>
+  <div style="display: flex; justify-content: space-between; align-items: center; background: #151520; padding: 12px; border-radius: 10px; border: 1px solid #27273a;">
+    <div style="display: flex; gap: 12px; align-items: center;">
+      <!-- BUG 2: Missing alt attribute on product image -->
+      <img src="https://placehold.co/72x56/2f3cff/ffffff?text=f%2F1.4" style="border-radius: 8px;" />
+      <div>
+        <div style="font-weight: 700; font-size: 14px; color: #ffffff;">$680.00 USD</div>
+        <!-- BUG 3: Low contrast text (#363645 on #151520 = 1.5:1) -->
+        <p style="color: #363645; background: #151520; font-size: 12px; margin: 3px 0 0 0;">
+          Machined titanium housing with AR sapphire glass.
+        </p>
+      </div>
     </div>
   </div>
 
-  <div style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
-    <label for="vip-promo" style="font-size: 12px; font-weight: 700; color: #0e0e10;">Promo Code</label>
-    <input id="vip-promo" type="text" style="flex: 1; min-height: 44px; padding: 0 12px; border: 1px solid #52525b; border-radius: 8px; font-size: 13px;" />
-    <button type="button" style="min-height: 44px; min-width: 100px; padding: 0 16px; background: #0e0e10; color: #ffffff; border: none; border-radius: 8px; font-weight: 700; font-size: 12px;">
-      Apply Code
+  <div style="margin-top: 14px; display: flex; gap: 8px; align-items: center; background: #151520; padding: 10px; border-radius: 10px;">
+    <!-- BUG 4 & 5: Unlabeled input + 26x26px unlabeled button -->
+    <input type="text" placeholder="Enter founder allocation key..." style="flex: 1; padding: 7px 10px; background: #0e0e14; color: #fff; border: 1px solid #27273a; border-radius: 6px; font-size: 12px;" />
+    <button type="button" style="width: 26px; height: 26px; background: #9aa5ff; color: #0b0b0e; border: none; border-radius: 6px;"></button>
+  </div>
+</div>`,
+    fixedHtml: `<div style="padding: 22px; font-family: system-ui, -apple-system, sans-serif; background: #0e0e14; color: #f4f4f6; border-radius: 12px; border: 1px solid #32324a;">
+  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #252538; padding-bottom: 12px;">
+    <div>
+      <span style="font-size: 10px; font-family: monospace; letter-spacing: 0.14em; color: #b4b4c7;">ATELIER OPTICS // ORDER #AP-904</span>
+      <h1 style="font-size: 20px; font-weight: 800; margin: 3px 0 0 0;">VIP Allocation Bag</h1>
+    </div>
+    <span style="background: rgba(16, 185, 129, 0.18); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.35); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;">
+      ✓ 1 UNIT VERIFIED
+    </span>
+  </div>
+
+  <h2 style="font-size: 14px; margin: 14px 0 8px 0; color: #f4f4f6;">
+    Leica-Mount Diopter Calibration Kit (Sequential &lt;h2&gt;)
+  </h2>
+
+  <div style="display: flex; justify-content: space-between; align-items: center; background: #151520; padding: 12px; border-radius: 10px; border: 1px solid #32324a;">
+    <div style="display: flex; gap: 12px; align-items: center;">
+      <img src="https://placehold.co/72x56/2f3cff/ffffff?text=f%2F1.4" alt="Leica-Mount f/1.4 Titanium Diopter Calibration Lens" style="border-radius: 8px;" />
+      <div>
+        <div style="font-weight: 700; font-size: 14px; color: #ffffff;">$680.00 USD</div>
+        <p style="color: #c4c4d4; background: #151520; font-size: 12.5px; margin: 3px 0 0 0;">
+          Machined titanium housing with AR sapphire glass.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; background: #151520; padding: 12px; border-radius: 10px; border: 1px solid #32324a;">
+    <label for="vip-key-input" style="font-size: 12px; font-weight: 700; color: #f4f4f6;">Allocation Key</label>
+    <input id="vip-key-input" type="text" value="APERTURE-VIP" style="flex: 1; min-height: 44px; padding: 0 12px; background: #0e0e14; color: #fff; border: 1px solid #4a4a6a; border-radius: 8px; font-size: 13px;" />
+    <button type="button" style="min-height: 44px; min-width: 118px; padding: 0 16px; background: #9aa5ff; color: #0b0b0e; border: none; border-radius: 8px; font-weight: 800; font-size: 12px;">
+      Apply Key →
     </button>
   </div>
 </div>`,
@@ -168,38 +176,61 @@ const SANDBOX_PRESETS: SandboxPreset[] = [
     id: "healthcare",
     name: "Clinical Telemetry",
     tag: "FORMS & HEADINGS",
-    flawedHtml: `<div style="padding: 24px; font-family: system-ui, sans-serif; background: #ffffff; color: #0e0e10; border-radius: 12px; border: 1px solid #e2e8f0;">
-  <div style="display: flex; justify-content: space-between; align-items: center;">
-    <h1 style="font-size: 19px; font-weight: 800; margin: 0;">Ophthalmology Rx Portal</h1>
-    <span style="font-size: 11px; font-family: monospace; color: #64748b;">PT-ID // 8841-A</span>
+    flawedHtml: `<div style="padding: 22px; font-family: system-ui, -apple-system, sans-serif; background: #0b1116; color: #f0f6fc; border-radius: 12px; border: 1px solid #1e2d3d;">
+  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #172330; padding-bottom: 12px;">
+    <div>
+      <span style="font-size: 10px; font-family: monospace; letter-spacing: 0.12em; color: #38bdf8;">OPHTHALMOLOGY ICU // PATIENT #8841-A</span>
+      <h1 style="font-size: 20px; font-weight: 800; margin: 3px 0 0 0;">Retinal Acuity &amp; Diopter Rx</h1>
+    </div>
+    <span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-family: monospace; font-weight: 700;">
+      IOP: 14 mmHg
+    </span>
   </div>
-  <h4 style="font-size: 14px; margin-top: 10px; color: #0f172a;">Dosage &amp; Diopter Verification</h4>
-  <p style="color: #cbd5e1; background: #ffffff; font-size: 12.5px; margin-top: 6px;">
-    Apply 1 sterile drop every 12 hours. Avoid bright uncalibrated screens.
+
+  <!-- BUG 1: Skipped heading h1 -> h4 -->
+  <h4 style="font-size: 13px; margin: 14px 0 6px 0; color: #bae6fd;">
+    Post-Op Atropine Dosage Protocol (Skipped h2/h3!)
+  </h4>
+
+  <!-- BUG 2: Low contrast text (#263545 on #0b1116 = 1.55:1) -->
+  <p style="color: #263545; background: #0b1116; font-size: 12.5px; line-height: 1.5; margin: 0;">
+    Administer 1 sterile ophthalmic drop every 12 hours. Avoid uncalibrated high-glare displays.
   </p>
-  <div style="margin-top: 14px; display: flex; gap: 8px; align-items: center;">
-    <select style="padding: 5px; border: 1px solid #cbd5e1; border-radius: 6px;">
-      <option>Select Dispensing Clinic</option>
+
+  <div style="margin-top: 14px; display: flex; gap: 8px; align-items: center; background: #101923; padding: 12px; border-radius: 10px; border: 1px solid #1e2d3d;">
+    <!-- BUG 3, 4, 5: Unlabeled select + 24x24px unlabeled button -->
+    <select style="flex: 1; padding: 6px 10px; background: #0b1116; color: #f0f6fc; border: 1px solid #1e2d3d; border-radius: 6px; font-size: 12px;">
+      <option>Dispensing Unit: Surgical Optical Wing B</option>
     </select>
-    <button type="button" style="width: 24px; height: 24px; background: #0284c7; color: #fff; border: none; border-radius: 4px;"></button>
+    <button type="button" style="width: 24px; height: 24px; background: #0284c7; color: #fff; border: none; border-radius: 6px;"></button>
   </div>
 </div>`,
-    fixedHtml: `<div style="padding: 24px; font-family: system-ui, sans-serif; background: #ffffff; color: #0e0e10; border-radius: 12px; border: 1px solid #cbd5e1;">
-  <div style="display: flex; justify-content: space-between; align-items: center;">
-    <h1 style="font-size: 19px; font-weight: 800; margin: 0;">Ophthalmology Rx Portal</h1>
-    <span style="font-size: 11px; font-family: monospace; color: #334155; font-weight: 700;">PT-ID // 8841-A</span>
+    fixedHtml: `<div style="padding: 22px; font-family: system-ui, -apple-system, sans-serif; background: #0b1116; color: #f0f6fc; border-radius: 12px; border: 1px solid #263b52;">
+  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e3042; padding-bottom: 12px;">
+    <div>
+      <span style="font-size: 10px; font-family: monospace; letter-spacing: 0.12em; color: #7dd3fc;">OPHTHALMOLOGY ICU // PATIENT #8841-A</span>
+      <h1 style="font-size: 20px; font-weight: 800; margin: 3px 0 0 0;">Retinal Acuity &amp; Diopter Rx</h1>
+    </div>
+    <span style="background: rgba(56, 189, 248, 0.2); color: #bae6fd; border: 1px solid rgba(56, 189, 248, 0.4); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-family: monospace; font-weight: 700;">
+      IOP: 14 mmHg [NORMAL]
+    </span>
   </div>
-  <h2 style="font-size: 15px; margin-top: 10px; color: #0f172a;">Dosage &amp; Diopter Verification</h2>
-  <p style="color: #334155; background: #ffffff; font-size: 13px; margin-top: 6px;">
-    Apply 1 sterile drop every 12 hours. Avoid bright uncalibrated screens.
+
+  <h2 style="font-size: 14px; margin: 14px 0 6px 0; color: #e0f2fe;">
+    Post-Op Atropine Dosage Protocol (Sequential &lt;h2&gt;)
+  </h2>
+
+  <p style="color: #bae6fd; background: #0b1116; font-size: 13px; line-height: 1.5; margin: 0;">
+    Administer 1 sterile ophthalmic drop every 12 hours. Avoid uncalibrated high-glare displays.
   </p>
-  <div style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
-    <label for="clinic-select" style="font-size: 12.5px; font-weight: 700; color: #0f172a;">Clinic</label>
-    <select id="clinic-select" style="min-height: 44px; padding: 0 12px; border: 1px solid #334155; border-radius: 8px; font-size: 13px;">
-      <option>Central Optical Clinic</option>
+
+  <div style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; background: #101923; padding: 12px; border-radius: 10px; border: 1px solid #263b52;">
+    <label for="clinic-wing-select" style="font-size: 12px; font-weight: 700; color: #f0f6fc;">Dispensing Wing</label>
+    <select id="clinic-wing-select" style="flex: 1; min-height: 44px; padding: 0 12px; background: #0b1116; color: #f0f6fc; border: 1px solid #38bdf8; border-radius: 8px; font-size: 13px;">
+      <option>Surgical Optical Wing B</option>
     </select>
-    <button type="button" style="min-height: 44px; min-width: 130px; padding: 0 16px; background: #0369a1; color: #ffffff; border: none; border-radius: 8px; font-weight: 700; font-size: 12px;">
-      Confirm Refill ✓
+    <button type="button" style="min-height: 44px; min-width: 132px; padding: 0 16px; background: #0284c7; color: #ffffff; border: none; border-radius: 8px; font-weight: 700; font-size: 12px;">
+      Sign Rx Order ✓
     </button>
   </div>
 </div>`,
@@ -218,7 +249,9 @@ export default function PlaygroundPage() {
   const [intensity, setIntensity] = useState(65);
   const [xrayMode, setXrayMode] = useState(false);
 
-  // Starts UNSCANNED (null) until user explicitly clicks Scan or Auto-Remediate!
+  // Pointer coordinates inside the preview box for Glaucoma (tunnel) & Macular (scotoma) masks!
+  const [maskPos, setMaskPos] = useState({ x: 50, y: 50 });
+
   const [report, setReport] = useState<AuditReport | null>(null);
   const [isScanning, setIsScanning] = useState(false);
   const [isRemediated, setIsRemediated] = useState(false);
@@ -226,7 +259,7 @@ export default function PlaygroundPage() {
   const triggerScanWithLaser = (afterRemediate = false) => {
     setIsScanning(true);
 
-    const delay = reduceMotion ? 40 : 620;
+    const delay = reduceMotion ? 40 : 580;
     window.setTimeout(() => {
       if (previewRef.current) {
         const res = runDomAudit(previewRef.current);
@@ -240,7 +273,7 @@ export default function PlaygroundPage() {
   const handleSelectPreset = (preset: SandboxPreset) => {
     setActivePreset(preset);
     setIsRemediated(false);
-    setReport(null); // Reset score back to Standby until scanned
+    setReport(null);
     setHtmlCode(preset.flawedHtml);
   };
 
@@ -309,6 +342,13 @@ export default function PlaygroundPage() {
     }
   };
 
+  const handlePreviewPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setMaskPos({ x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)) });
+  };
+
   return (
     <div className="mx-auto max-w-[1280px] px-4 sm:px-8">
       <div className="border-x border-b py-12 px-6 sm:px-12">
@@ -337,7 +377,6 @@ export default function PlaygroundPage() {
             </h1>
           </div>
 
-          {/* Primary Action Deck */}
           <div className="flex flex-wrap items-center gap-2.5">
             <button
               type="button"
@@ -345,7 +384,7 @@ export default function PlaygroundPage() {
               style={{ fontFamily: "var(--font-mono)" }}
               className="min-h-[44px] cursor-pointer rounded-lg border bg-[var(--surface)] px-4 text-xs font-bold uppercase tracking-wider transition-colors hover:border-[var(--accent)]"
             >
-              {isScanning ? "Scanning DOM..." : "Scan Specimen"}
+              {isScanning ? "Scanning DOM..." : "🔍 Scan Specimen"}
             </button>
 
             <button
@@ -360,7 +399,7 @@ export default function PlaygroundPage() {
             >
               {isRemediated
                 ? "✓ Remediated (100/100)"
-                : "Auto-Remediate & Scan"}
+                : "✨ Auto-Remediate & Scan"}
             </button>
 
             <button
@@ -408,7 +447,6 @@ export default function PlaygroundPage() {
             })}
           </div>
 
-          {/* Optical Filter + Intensity + X-Ray Toggle */}
           <div className="flex flex-wrap items-center gap-3">
             <label htmlFor="sandbox-sim-select" className="sr-only">
               Select Sandbox Simulation
@@ -420,7 +458,7 @@ export default function PlaygroundPage() {
               style={{ fontFamily: "var(--font-mono)" }}
               className="min-h-[44px] rounded-lg border bg-[var(--bg)] px-3 text-xs font-semibold uppercase"
             >
-              {SIMULATION_CATALOG.slice(0, 10).map((item) => (
+              {SIMULATION_CATALOG.slice(0, 11).map((item) => (
                 <option key={item.id} value={item.id}>
                   LENS: {item.label}
                 </option>
@@ -474,7 +512,7 @@ export default function PlaygroundPage() {
             >
               <span>
                 01 // RAW DOM SOURCE (
-                {isRemediated ? "REMEDIATED WCAG AA/AAA" : "UNPATCHED SPECIMEN"}
+                {isRemediated ? "REMEDIATED WCAG AA/AAA" : "FLAWED SPECIMEN"}
                 )
               </span>
               {isRemediated && (
@@ -540,13 +578,11 @@ export default function PlaygroundPage() {
               </span>
             </div>
 
-            {/* Outer wrapper has data-lens-ignore so global HUD ignores it,
-                while inner previewRef does NOT have data-lens-ignore so sandbox scanner works! */}
+            {/* Viewport Container (NO data-lens-ignore here so runDomAudit scans every node inside!) */}
             <div
-              data-lens-ignore="true"
+              onPointerMove={handlePreviewPointerMove}
               className="relative overflow-hidden rounded-xl border bg-[var(--surface)] p-5"
             >
-              {/* Animated Laser Sweep Overlay during Scan */}
               {isScanning && (
                 <div
                   aria-hidden="true"
@@ -555,12 +591,32 @@ export default function PlaygroundPage() {
                 />
               )}
 
-              {/* X-Ray Wireframe CSS Injection */}
+              {/* Live Glaucoma (Tunnel Vision) Radial Mask inside Sandbox */}
+              {sim === "glaucoma" && (
+                <div
+                  aria-hidden="true"
+                  style={{
+                    background: `radial-gradient(circle 110px at ${maskPos.x}% ${maskPos.y}%, transparent 0%, rgba(0,0,0,0.92) 75%, #000000 100%)`,
+                  }}
+                  className="pointer-events-none absolute inset-0 z-20"
+                />
+              )}
+
+              {/* Live Macular Degeneration (Central Scotoma) Radial Mask inside Sandbox */}
+              {sim === "macular" && (
+                <div
+                  aria-hidden="true"
+                  style={{
+                    background: `radial-gradient(circle 85px at ${maskPos.x}% ${maskPos.y}%, #050507 0%, rgba(5,5,7,0.88) 55%, transparent 100%)`,
+                  }}
+                  className="pointer-events-none absolute inset-0 z-20"
+                />
+              )}
+
               {xrayMode && (
                 <style>{`
                   .sandbox-xray * {
                     outline: 1px dashed rgba(154, 165, 255, 0.65) !important;
-                    position: relative;
                   }
                 `}</style>
               )}
@@ -586,9 +642,9 @@ export default function PlaygroundPage() {
                     DIAGNOSTIC STANDBY
                   </div>
                   <p className="mt-2 max-w-md text-xs text-[var(--muted)]">
-                    Click <strong>&quot;Scan Specimen&quot;</strong> to run
+                    Click <strong>&quot;🔍 Scan Specimen&quot;</strong> to run
                     the 8-rule WCAG 2.1 DOM auditor on the flawed UI, or click{" "}
-                    <strong>&quot;Auto-Remediate &amp; Scan&quot;</strong> to
+                    <strong>&quot;✨ Auto-Remediate &amp; Scan&quot;</strong> to
                     patch all defects and verify a 100/100 score.
                   </p>
                 </div>

@@ -5,8 +5,8 @@ import { usePreferences } from "../layout/ThemeProvider";
 
 interface OpticalParticle {
   id: number;
-  baseX: number; // vw percentage
-  baseY: number; // vh percentage
+  baseX: number;
+  baseY: number;
   glyph: string;
   size: string;
   speed: number;
@@ -56,17 +56,14 @@ export function FloatingOptics() {
         const el = itemRefs.current[idx];
         if (!el) return;
 
-        // If Reduced Motion is ON, keep every particle completely static at its base position
         if (reduceMotion) {
           el.style.transform = "translate3d(0px, 0px, 0px)";
           return;
         }
 
-        // 1. Gentle orbital float when Motion: Full
         const floatX = Math.sin(t * p.speed + p.phase) * 14;
         const floatY = Math.cos(t * (p.speed * 0.85) + p.phase) * 14;
 
-        // 2. Magnetic cursor repulsion when mouse gets within 150px
         const originPxX = (p.baseX / 100) * vw + floatX;
         const originPxY = (p.baseY / 100) * vh + floatY;
         const dx = originPxX - pointerRef.current.x;
@@ -100,7 +97,9 @@ export function FloatingOptics() {
     };
   }, [mounted, reduceMotion]);
 
-  if (!mounted || resolvedTheme === "contrast") return null;
+  if (!mounted) return null;
+
+  const isHighContrast = resolvedTheme === "contrast";
 
   return (
     <div
@@ -121,7 +120,11 @@ export function FloatingOptics() {
             fontSize: p.size,
             transition: reduceMotion ? "none" : "transform 90ms ease-out",
           }}
-          className="fixed rounded border border-[var(--line)] bg-[var(--surface)]/70 px-2 py-0.5 uppercase tracking-widest text-[var(--muted)] opacity-60 backdrop-blur-sm"
+          className={`fixed rounded px-2 py-0.5 uppercase tracking-widest ${
+            isHighContrast
+              ? "border-2 border-[#ffd400] bg-black text-[#ffd400] opacity-95 font-bold"
+              : "border border-[var(--line)] bg-[var(--surface)]/75 text-[var(--muted)] opacity-65 backdrop-blur-sm"
+          }`}
         >
           {p.glyph}
         </div>

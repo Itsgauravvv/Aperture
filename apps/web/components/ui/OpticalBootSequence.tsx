@@ -12,7 +12,7 @@ const BOOT_LOGS = [
 
 export function OpticalBootSequence() {
   const { reduceMotion } = usePreferences();
-  const [phase, setPhase] = useState<"checking" | "calibrating" | "holding" | "opening" | "done">("checking");
+  const [phase, setPhase] = useState<"calibrating" | "holding" | "opening" | "done">("calibrating");
   const [progress, setProgress] = useState(0);
 
   const startBoot = () => {
@@ -86,7 +86,7 @@ export function OpticalBootSequence() {
     return () => cancelAnimationFrame(rafId);
   }, [phase]);
 
-  if (phase === "checking" || phase === "done") return null;
+  if (phase === "done") return null;
 
   const fStop =
     progress < 25
