@@ -16,7 +16,7 @@
 [![Zero Dependencies](https://img.shields.io/badge/Dependencies-0_Runtime-10b981?style=flat-square)](#)
 [![WCAG Dogfooded](https://img.shields.io/badge/WCAG_2.1_AA%2FAAA-100%2F100_Verified-ffd400?style=flat-square)](#)
 
-[Explore Showcase](#) · [Field Manual (`/docs`)](#) · [Diagnostic Workbench (`/playground`)](#) · [Install Guide (`/install`)](#)
+[Explore Aperture](https://aperture-a11y.vercel.app/) · [Field Manual (`/docs`)](https://aperture-a11y.vercel.app/docs) · [Diagnostic Workbench (`/playground`)](https://aperture-a11y.vercel.app/playground) · [Install Guide (`/install`)](https://aperture-a11y.vercel.app/install)
 
 </div>
 
