@@ -126,10 +126,10 @@ export function HeroOpticalDial() {
                 {/* 8 Mechanical Aperture Blades */}
                 {Array.from({ length: 8 }).map((_, i) => {
                   const angle = (i * 45 * Math.PI) / 180;
-                  const x1 = 60 + Math.cos(angle) * 44;
-                  const y1 = 60 + Math.sin(angle) * 44;
-                  const x2 = 60 + Math.cos(angle + 0.55) * active.apertureRadius;
-                  const y2 = 60 + Math.sin(angle + 0.55) * active.apertureRadius;
+                  const x1 = (60 + Math.cos(angle) * 44).toFixed(3);
+                  const y1 = (60 + Math.sin(angle) * 44).toFixed(3);
+                  const x2 = (60 + Math.cos(angle + 0.55) * active.apertureRadius).toFixed(3);
+                  const y2 = (60 + Math.sin(angle + 0.55) * active.apertureRadius).toFixed(3);
                   return (
                     <line
                       key={i}

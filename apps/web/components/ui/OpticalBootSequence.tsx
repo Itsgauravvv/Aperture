@@ -163,10 +163,10 @@ export function OpticalBootSequence() {
             {/* 12 Precision Iris Blades */}
             {Array.from({ length: 12 }).map((_, i) => {
               const angle = (i * 30 * Math.PI) / 180;
-              const x1 = 60 + Math.cos(angle) * 48;
-              const y1 = 60 + Math.sin(angle) * 48;
-              const x2 = 60 + Math.cos(angle + 0.52) * irisRadius;
-              const y2 = 60 + Math.sin(angle + 0.52) * irisRadius;
+              const x1 = (60 + Math.cos(angle) * 48).toFixed(3);
+              const y1 = (60 + Math.sin(angle) * 48).toFixed(3);
+              const x2 = (60 + Math.cos(angle + 0.52) * irisRadius).toFixed(3);
+              const y2 = (60 + Math.sin(angle + 0.52) * irisRadius).toFixed(3);
               return (
                 <line
                   key={i}
