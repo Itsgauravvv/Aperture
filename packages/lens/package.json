@@ -1,6 +1,6 @@
 {
   "name": "lens-a11y",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Zero-dependency optical accessibility simulator (color blindness, cataracts, glaucoma, dyslexia, motor tremor) and live WCAG 2.1 DOM auditor.",
   "license": "MIT",
   "author": "Gaurav Joshi",
