@@ -20,6 +20,36 @@
 
 </div>
 
+## 📸 Optical Interface Preview
+
+<table>
+  <tr>
+    <th align="center">01 // Hero & Retinal Spectrometer</th>
+    <th align="center">02 // Machined Shadow-DOM HUD</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="./docs/screenshots/hero1.png" alt="Aperture Hero Viewfinder" width="100%" /><br/>
+      <img src="./docs/screenshots/hero2.png" alt="Aperture Hero Spectrometer" width="100%" />
+    </td>
+    <td align="center">
+      <img src="./docs/screenshots/hud.png" alt="Aperture Floating HUD" width="100%" />
+    </td>
+  </tr>
+  <tr>
+    <th align="center">03 // Diagnostic HTML Workbench</th>
+    <th align="center">04 // Darkroom Screen-Reader Challenge</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="./docs/screenshots/playground.png" alt="Interactive Playground" width="100%" />
+    </td>
+    <td align="center">
+      <img src="./docs/screenshots/darkroom.png" alt="Darkroom Empathy Mode" width="100%" />
+    </td>
+  </tr>
+</table>
+
 ---
 
 ## 00 // THE MANIFESTO
@@ -45,8 +75,9 @@ pnpm add lens-a11y
 # or
 yarn add lens-a11y
 ```
+---
 
-### Option B: Global CDN (Zero Build Step)
+## Global CDN (Zero Build Step)
 Drop this script tag into the `<head>` of any plain HTML file, WordPress site, or static prototype:
 
 ```html
@@ -131,7 +162,7 @@ import { Lens } from "lens-a11y";
 // 1. Mount the isolated Shadow-DOM viewfinder HUD
 Lens.mount({
   position: "bottom-right",
-  theme: "auto", // "auto" | "light" | "dark" | "contrast"
+  theme: "auto", 
 });
 
 // 2. Activate any optical, cognitive, motor, or topology simulation
@@ -180,6 +211,6 @@ pnpm dev
 
 ## 06 // LICENSE & CRAFT
 
-Released under the [MIT License](./LICENSE). Crafted by **Gaurav Joshi**.
+Crafted by **Gaurav Joshi**.
 
 If Aperture helps you see the web with more empathy, **drop a ★ on the GitHub repository** to help more engineers discover accessible tooling.
