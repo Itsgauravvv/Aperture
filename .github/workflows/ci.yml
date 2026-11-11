@@ -2,40 +2,41 @@ name: Aperture CI & WCAG Gate
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
   pull_request:
-    branches: [main, master]
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    branches: [main]
 
 jobs:
-  verify-and-build:
-    name: Lint, Vitest WCAG Audit & Monorepo Build
+  build-and-audit:
+    name: Build, Test & Verify Bundle
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Install pnpm
+      - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9.15.0
+          version: 9
 
-      - name: Setup Node.js 22
+      - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 20
+          cache: "pnpm"
 
-      - name: Install dependencies
+      - name: Install Workspace Dependencies
         run: pnpm install --no-frozen-lockfile
 
-      - name: Build lens-a11y Library (ESM + CJS + IIFE + Extension)
+      - name: 1. Build Core Optical Engine (lens-a11y)
         run: pnpm --filter lens-a11y build
 
-      - name: Run Vitest WCAG Contrast & Auditor Suite
+      - name: 2. Run WCAG Auditor & Matrix Unit Tests
         run: pnpm --filter lens-a11y test
 
-      - name: Build Next.js 15 Showcase Website
+      - name: 3. Typecheck Core Library
+        run: pnpm --filter lens-a11y lint
+
+      - name: 4. Build Next.js Showcase (apps/web)
         run: pnpm --filter web build
