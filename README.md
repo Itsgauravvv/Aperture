@@ -22,33 +22,19 @@
 
 ## 📸 Optical Interface Preview
 
-<table>
-  <tr>
-    <th align="center">01 // Hero & Retinal Spectrometer</th>
-    <th align="center">02 // Machined Shadow-DOM HUD</th>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="./docs/screenshots/hero1.png" alt="Aperture Hero Viewfinder" width="100%" /><br/>
-      <img src="./docs/screenshots/hero2.png" alt="Aperture Hero Spectrometer" width="100%" />
-    </td>
-    <td align="center">
-      <img src="./docs/screenshots/hud.png" alt="Aperture Floating HUD" width="100%" />
-    </td>
-  </tr>
-  <tr>
-    <th align="center">03 // Diagnostic HTML Workbench</th>
-    <th align="center">04 // Darkroom Screen-Reader Challenge</th>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="./docs/screenshots/playground.png" alt="Interactive Playground" width="100%" />
-    </td>
-    <td align="center">
-      <img src="./docs/screenshots/darkroom.png" alt="Darkroom Empathy Mode" width="100%" />
-    </td>
-  </tr>
-</table>
+### 01 // Hero & Retinal Spectrometer
+![Aperture Hero Viewfinder](./docs/screenshots/hero1.png)
+
+![Aperture Hero Spectrometer](./docs/screenshots/hero2.png)
+
+### 02 // Machined Shadow-DOM HUD
+![Aperture Floating HUD](./docs/screenshots/hud.png)
+
+### 03 // Diagnostic HTML Workbench
+![Interactive Playground](./docs/screenshots/playground.png)
+
+### 04 // Darkroom Screen-Reader Challenge
+![Darkroom Empathy Mode](./docs/screenshots/darkroom.png)
 
 ---
 
