@@ -41,7 +41,26 @@ function hasAccessibleName(el: HTMLElement): boolean {
   if (title) return true;
   const imgAlt = el.querySelector("img[alt]")?.getAttribute("alt")?.trim();
   if (imgAlt) return true;
+  const svgTitle = el.querySelector("svg title")?.textContent?.trim();
+  if (svgTitle) return true;
+  const svgAria = el.querySelector("svg[aria-label]")?.getAttribute("aria-label")?.trim();
+  if (svgAria) return true;
   return false;
+}
+
+function isElementVisible(el: HTMLElement, style?: CSSStyleDeclaration): boolean {
+  if (el.hasAttribute("hidden") || el.getAttribute("aria-hidden") === "true") {
+    return false;
+  }
+  const computed = style || window.getComputedStyle(el);
+  if (
+    computed.display === "none" ||
+    computed.visibility === "hidden" ||
+    parseFloat(computed.opacity) === 0
+  ) {
+    return false;
+  }
+  return true;
 }
 
 export function runDomAudit(root: Document | HTMLElement = document): AuditReport {
@@ -92,7 +111,7 @@ export function runDomAudit(root: Document | HTMLElement = document): AuditRepor
 
   // 3. Check <img> missing alt attribute
   scopeEl.querySelectorAll<HTMLImageElement>("img").forEach((img) => {
-    if (isIgnored(img)) return;
+    if (isIgnored(img) || !isElementVisible(img)) return;
     if (!img.hasAttribute("alt")) {
       issueCount++;
       issues.push({
@@ -115,7 +134,7 @@ export function runDomAudit(root: Document | HTMLElement = document): AuditRepor
   scopeEl
     .querySelectorAll<HTMLElement>('button, [role="button"]')
     .forEach((btn) => {
-      if (isIgnored(btn)) return;
+      if (isIgnored(btn) || !isElementVisible(btn)) return;
       if (!hasAccessibleName(btn)) {
         issueCount++;
         issues.push({
@@ -137,18 +156,22 @@ export function runDomAudit(root: Document | HTMLElement = document): AuditRepor
   // 5. Check unlabeled <input>, <select>, <textarea>
   scopeEl
     .querySelectorAll<HTMLElement>(
-      'input:not([type="hidden"]):not([type="submit"]):not([type="button"]), select, textarea'
+      'input:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]), select, textarea'
     )
     .forEach((input) => {
-      if (isIgnored(input)) return;
+      if (isIgnored(input) || !isElementVisible(input)) return;
       const id = input.id;
       const hasForLabel = id
-        ? Boolean(scopeEl.querySelector(`label[for="${escapeCss(id)}"]`))
+        ? Boolean(
+            scopeEl.querySelector(`label[for="${escapeCss(id)}"]`) ||
+              document.querySelector(`label[for="${escapeCss(id)}"]`)
+          )
         : false;
       const hasWrappingLabel = Boolean(input.closest("label"));
       const hasAria =
         Boolean(input.getAttribute("aria-label")?.trim()) ||
-        Boolean(input.getAttribute("aria-labelledby")?.trim());
+        Boolean(input.getAttribute("aria-labelledby")?.trim()) ||
+        Boolean(input.getAttribute("title")?.trim());
 
       if (!hasForLabel && !hasWrappingLabel && !hasAria) {
         issueCount++;
@@ -173,7 +196,7 @@ export function runDomAudit(root: Document | HTMLElement = document): AuditRepor
   scopeEl
     .querySelectorAll<HTMLElement>("h1, h2, h3, h4, h5, h6")
     .forEach((heading) => {
-      if (isIgnored(heading)) return;
+      if (isIgnored(heading) || !isElementVisible(heading)) return;
       const level = Number(heading.tagName.slice(1));
       if (prevHeadingLevel > 0 && level > prevHeadingLevel + 1) {
         issueCount++;
@@ -197,16 +220,12 @@ export function runDomAudit(root: Document | HTMLElement = document): AuditRepor
   const allElements = scopeEl.querySelectorAll<HTMLElement>("*");
   allElements.forEach((el) => {
     if (isIgnored(el)) return;
-    if (["SCRIPT", "STYLE", "SVG", "PATH", "NOSCRIPT"].includes(el.tagName)) {
+    if (["SCRIPT", "STYLE", "SVG", "PATH", "NOSCRIPT", "META", "LINK"].includes(el.tagName)) {
       return;
     }
 
     const style = window.getComputedStyle(el);
-    if (
-      style.display === "none" ||
-      style.visibility === "hidden" ||
-      style.opacity === "0"
-    ) {
+    if (!isElementVisible(el, style)) {
       return;
     }
 
@@ -249,6 +268,9 @@ export function runDomAudit(root: Document | HTMLElement = document): AuditRepor
       'button, input:not([type="hidden"]), select, textarea, [role="button"], [role="radio"], [role="tab"]'
     );
     if (isInteractive) {
+      // Exempt inline controls inside text paragraphs per WCAG 2.5.5 / 2.5.8
+      if (style.display === "inline") return;
+
       const rect = el.getBoundingClientRect();
       if (rect.width > 0 && rect.height > 0) {
         const w = Math.round(rect.width);
@@ -273,11 +295,40 @@ export function runDomAudit(root: Document | HTMLElement = document): AuditRepor
     }
   });
 
-  const penalty = issues.reduce(
-    (acc, item) => acc + (item.severity === "error" ? 9 : 5),
-    0
-  );
-  const score = Math.max(0, 100 - penalty);
+  // Lighthouse-style Rule-Grouped Logarithmic + Node-Density Scoring
+  // Prevents massive sites (Google, Wikipedia, YouTube) from hitting 0 due to repeated minor warnings,
+  // while keeping small specimen widgets strict.
+  let score = 100;
+
+  if (issues.length > 0) {
+    const byRule = new Map<string, { severity: "error" | "warning"; count: number }>();
+    for (const item of issues) {
+      const existing = byRule.get(item.ruleId);
+      if (existing) {
+        existing.count += 1;
+      } else {
+        byRule.set(item.ruleId, { severity: item.severity, count: 1 });
+      }
+    }
+
+    let rawPenalty = 0;
+    byRule.forEach(({ severity, count }) => {
+      const baseWeight = severity === "error" ? 9 : 5;
+      // 1st instance of a rule takes full weight; repeated instances of the SAME rule scale logarithmically
+      const ruleDeduction = baseWeight * (1 + Math.log2(count) * 0.55);
+      rawPenalty += Math.min(24, ruleDeduction);
+    });
+
+    // Normalize slightly for large production DOM trees (>300 elements)
+    const densityFactor =
+      allElements.length > 1000
+        ? 0.72
+        : allElements.length > 300
+        ? 0.85
+        : 1.0;
+
+    score = Math.max(14, Math.min(99, Math.round(100 - rawPenalty * densityFactor)));
+  }
 
   return {
     score,
