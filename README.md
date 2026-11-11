@@ -1,4 +1,8 @@
 <div align="center">
+[![npm version](https://img.shields.io/npm/v/lens-a11y.svg?style=flat-square&color=2f3cff)](https://www.npmjs.com/package/lens-a11y)
+[![CI & WCAG Gate](https://github.com/Itsgauravvv/Aperture/actions/workflows/ci.yml/badge.svg)](https://github.com/Itsgauravvv/Aperture/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![CDN: jsDelivr](https://img.shields.io/badge/CDN-jsDelivr-brightgreen.svg?style=flat-square)](https://www.jsdelivr.com/package/npm/lens-a11y)
 
 # APERTURE (`lens-a11y`)
 
@@ -26,6 +30,29 @@ In reality, **2.2 billion people** navigate the web with vision impairments, col
 **Aperture (`lens-a11y`)** is built for design engineers who care about craft. Engineered like a Leica viewfinder and Teenage Engineering field instrument, it drops into any stack in seconds—with zero runtime dependencies, zero telemetry, and a hermetically sealed Shadow-DOM HUD.
 
 > *"Open source. Inclusive by design. Accessible by default."*
+
+---
+
+## 📦 Installation
+
+Install the core optical engine via your preferred package manager:
+
+```bash
+npm install lens-a11y
+# or
+pnpm add lens-a11y
+# or
+yarn add lens-a11y
+```
+
+### Option B: Global CDN (Zero Build Step)
+Drop this script tag into the `<head>` of any plain HTML file, WordPress site, or static prototype:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/lens-a11y@0.1.0/dist/lens.min.js" data-lens="auto"></script>
+```
+
+> Looking for the Chrome/Brave extension? See [Option C in Section 03](#03--usage--integration).
 
 ---
 
@@ -80,23 +107,22 @@ Aperture/
 
 ---
 
-## 03 // ZERO-CONFIG INTEGRATION
+## 03 // USAGE & INTEGRATION
 
-### Option A — One-Line Declarative Script Tag (jsDelivr CDN)
-Drop a single tag into any HTML document to auto-mount the Shadow-DOM HUD:
+Already installed via the [Installation](#-installation) section above? Here's how to put Aperture to work.
+
+### Declarative — Script Tag
+Boot straight into a specific clinical simulation using the `data-lens` attribute:
 
 ```html
 <!-- Mounts the floating optical HUD automatically -->
-<script src="https://cdn.jsdelivr.net/npm/lens-a11y@0.1/dist/lens.min.js" data-lens="auto"></script>
+<script src="https://cdn.jsdelivr.net/npm/lens-a11y@0.1.0/dist/lens.min.js" data-lens="auto"></script>
 
 <!-- Or boot directly into a specific clinical simulation -->
-<script src="https://cdn.jsdelivr.net/npm/lens-a11y@0.1/dist/lens.min.js" data-lens="deuteranopia"></script>
+<script src="https://cdn.jsdelivr.net/npm/lens-a11y@0.1.0/dist/lens.min.js" data-lens="deuteranopia"></script>
 ```
 
-### Option B — Typed ESM Package (`npm` / `pnpm` / `bun`)
-```bash
-pnpm add lens-a11y
-```
+### Programmatic — Typed ESM API
 
 ```ts
 import { Lens } from "lens-a11y";
