@@ -57,6 +57,9 @@ importers:
 
   packages/lens:
     devDependencies:
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.20.5
       jsdom:
         specifier: ^25.0.1
         version: 25.0.1
