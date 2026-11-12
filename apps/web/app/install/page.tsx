@@ -8,26 +8,39 @@ export default function InstallPage() {
   return (
     <div className="mx-auto max-w-[1280px] px-4 sm:px-8">
       <div className="border-x border-b py-14 px-6 sm:px-12 space-y-12">
-        <div>
-          <div
-            style={{ fontFamily: "var(--font-mono)" }}
-            className="text-xs uppercase tracking-[0.14em] text-[var(--muted)]"
-          >
-            INSTALLATION // EXTENSION, CDN, NPM &amp; CI QUALITY GATE
-          </div>
-          <h1 className="mt-2 text-3xl sm:text-5xl font-bold tracking-[-0.04em]">
-            Deploy across{" "}
-            <span
-              style={{
-                fontFamily: "var(--font-serif)",
-                color: "var(--accent)",
-              }}
-              className="font-normal italic tracking-normal"
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <div
+              style={{ fontFamily: "var(--font-mono)" }}
+              className="text-xs uppercase tracking-[0.14em] text-[var(--muted)]"
             >
-              every
-            </span>{" "}
-            environment
-          </h1>
+              INSTALLATION // EXTENSION, CDN, NPM &amp; CI QUALITY GATE
+            </div>
+            <h1 className="mt-2 text-3xl sm:text-5xl font-bold tracking-[-0.04em]">
+              Deploy across{" "}
+              <span
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  color: "var(--accent)",
+                }}
+                className="font-normal italic tracking-normal"
+              >
+                every
+              </span>{" "}
+              environment
+            </h1>
+          </div>
+
+          <a
+            href="https://www.npmjs.com/package/lens-a11y"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ fontFamily: "var(--font-mono)" }}
+            className="inline-flex min-h-[44px] items-center gap-2.5 rounded-lg border bg-[var(--surface)] px-4 py-2 text-xs font-bold uppercase tracking-wider text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+          >
+            <span className="h-2 w-2 rounded-full bg-emerald-400" />
+            <span>lens-a11y@0.1.2 // View on npm ↗</span>
+          </a>
         </div>
 
         {/* 1. Manifest V3 Browser Extension (CSP-Bypassing) */}
@@ -89,25 +102,56 @@ export default function InstallPage() {
           </div>
         </section>
 
-        {/* 2. One-Line CDN Script */}
+        {/* 2. NPM / PNPM Package Manager */}
+        <section aria-labelledby="npm-heading" className="space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 id="npm-heading" className="text-xl font-bold">
+              2. Package Manager (React, Next.js, Vite, Vue)
+            </h2>
+            <a
+              href="https://www.npmjs.com/package/lens-a11y"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ fontFamily: "var(--font-mono)" }}
+              className="text-xs font-semibold uppercase tracking-wider text-[var(--accent)] hover:underline"
+            >
+              npmjs.com/package/lens-a11y ↗
+            </a>
+          </div>
+          <CodeBlock
+            filename="terminal & app.tsx"
+            code={`# Install via npm, pnpm, or yarn
+npm install lens-a11y
+pnpm add lens-a11y
+
+// Mount in development mode inside your root layout or entry file
+import { Lens } from "lens-a11y";
+
+if (process.env.NODE_ENV === "development") {
+  Lens.mount({ position: "bottom-right", theme: "auto" });
+}`}
+          />
+        </section>
+
+        {/* 3. One-Line CDN Script */}
         <section aria-labelledby="cdn-heading" className="space-y-4">
           <h2 id="cdn-heading" className="text-xl font-bold">
-            2. One-Line CDN Script Tag (jsDelivr)
+            3. One-Line CDN Script Tag (jsDelivr)
           </h2>
           <CodeBlock
             filename="index.html"
             code={`<!-- Auto-mounts Floating HUD on your own websites -->
-<script src="https://cdn.jsdelivr.net/npm/lens-a11y@0.1/dist/lens.min.js" data-lens="auto"></script>
+<script src="https://cdn.jsdelivr.net/npm/lens-a11y@0.1.0/dist/lens.min.js" data-lens="auto"></script>
 
 <!-- Or boot directly into a specific simulation -->
-<script src="https://cdn.jsdelivr.net/npm/lens-a11y@0.1/dist/lens.min.js" data-lens="protanopia"></script>`}
+<script src="https://cdn.jsdelivr.net/npm/lens-a11y@0.1.0/dist/lens.min.js" data-lens="protanopia"></script>`}
           />
         </section>
 
-        {/* 3. Automated CI / Vitest Quality Gate */}
+        {/* 4. Automated CI / Vitest Quality Gate */}
         <section aria-labelledby="ci-heading" className="space-y-4">
           <h2 id="ci-heading" className="text-xl font-bold">
-            3. Automated CI / CD Accessibility Gate (Vitest / Playwright)
+            4. Automated CI / CD Accessibility Gate (Vitest / Playwright)
           </h2>
           <CodeBlock
             filename="a11y-ci.test.ts"
