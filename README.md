@@ -70,7 +70,7 @@ Drop this script tag into the `<head>` of any plain HTML file, WordPress site, o
 <script src="https://cdn.jsdelivr.net/npm/lens-a11y@0.1.0/dist/lens.min.js" data-lens="auto"></script>
 ```
 
-> Looking for the Chrome/Brave extension? See [Option C in Section 03](#03--usage--integration).
+> Looking for the Chrome/Brave extension? See [Go to Section 03](#03--usage--integration).
 
 ---
 
@@ -162,7 +162,7 @@ console.log(`WCAG Score: ${report.score}/100`, report.issues);
 Lens.off();
 ```
 
-### Option C — Manifest V3 Browser Extension (`packages/extension`)
+## Manifest V3 Browser Extension (`packages/extension`)
 Major production sites (Google Search, Wikipedia, GitHub) enforce strict `Content-Security-Policy: script-src 'self'` headers that block traditional `javascript:` bookmarklets. Our Manifest V3 extension injects `lens.min.js` inside an isolated content-script world so you can inspect any website on the internet:
 1. Run `pnpm --filter lens-a11y build` to bundle `packages/extension/lens.min.js`.
 2. Open `brave://extensions` or `chrome://extensions` and toggle **Developer mode**.
