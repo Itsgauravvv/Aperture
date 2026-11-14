@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from '@vercel/analytics/next';
 import { OpticalBootSequence } from "@/components/ui/OpticalBootSequence";
 import { FloatingOptics } from "@/components/ui/FloatingOptics";
 import { KonamiEasterEgg } from "@/components/ui/KonamiEasterEgg";
@@ -74,6 +75,7 @@ export default function RootLayout({
             {children}
           </main>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
